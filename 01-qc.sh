@@ -33,7 +33,7 @@ fastqcfolder=analysis/fastqc_raw
 mkdir -p $fastqcfolder
 
 # check how many satqs there are - assumes "fastq" suffix
-fastqs="$(find ../reads -type f -name ${ID}*.fastq*)"
+fastqs="$(find ../inputs/reads -type f -name ${ID}*.fastq*)"
 # convert to array to count elements
 fastqs_count=($fastqs)
 
@@ -43,14 +43,14 @@ if (( "${#fastqs_count[@]}" == 2 )); then
 echo "paired reads"
 
 ########## Run #################
-fastqc -o $fastqcfolder ../reads/${ID}_R1*.fastq.gz ../reads/${ID}_R2*.fastq.gz
+fastqc -o $fastqcfolder ../inputs/reads/${ID}_R1*.fastq.gz ../inputs/reads/${ID}_R2*.fastq.gz
 
 else
 echo "assuming single end"
 
 ########## Run #################
 
-fastqc -o $fastqcfolder ../reads/${ID}_R1*.fastq.gz
+fastqc -o $fastqcfolder ../inputs/reads/${ID}_R1*.fastq.gz
 
 fi
 
