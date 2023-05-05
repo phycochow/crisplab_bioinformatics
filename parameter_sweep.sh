@@ -6,20 +6,19 @@
 #SBATCH --array=1-4%1
 #SBATCH --partition=general
 #SBATCH --requeue
-
-#SBATCH --job-name=seqtk-sample
-#SBATCH --output=seqtk-sample-%j.out
 #SBATCH --error=seqtk-sample-%j.err
-#SBATCH --time=00:10:00
-#SBATCH --mem=4G
 
-# Define the list of numbers to use
-percentages=(1 2 3 4 5)
+cp -r ../../raw_reads ../inputs/reads
 
-# Loop over each number and process the files
-for number in "${numbers[@]}"; do
-  for file in *; do
-    /home/s4669612/software/seqtk/seqtk sample -s100 "$file" "$number" | gzip > "new_${file}_$number.fastq.gz"
+# Define the percentages for subsampling
+percentages=(1)
+
+# Loop over each percentage and process the files, the random seed -s100 is to ensure the subsampling works on the paired reads, it should work with any number
+for percentage in "${percentages[@]}"; do
+  cp -r ../../raw_reads ../inputs/reads
+  for file in ../inputs/reads/*; do
+    /home/s4669612/software/seqtk/seqtk sample -s100 "$file" "$percentage" > "$file"
   done
 done
 
+bash run_pipeline.sh
