@@ -24,9 +24,6 @@ trim_galore_job=$(sbatch --parsable --dependency=afterok:$fastqc_job /home/s4669
 # Submit the third job and set its dependency on the second job
 bowtie2_job=$(sbatch --parsable --dependency=afterok:$trim_galore_job /home/s4669612/gitrepos/crisplab_epigenomics/WGS/02-bowtie2_sbatch.sh ../samples.txt trimmed 6 /scratch/project/crisp008/chris/NGS_project/sorghum/Sbicolor_454_v3.0.1_vectors 10 18:00:00 40 a_crisp)
 
-# For some reason,it stays in the analysis directory after running, so to go back:
-
-
 # Submit the fourth job and set its dependency on the third job
 deeptools_job=$(sbatch --parsable --dependency=afterok:$bowtie2_job /home/s4669612/gitrepos/crisplab_epigenomics/WGS/03b-deeptools_bigWig_sbatch.sh ../samples.txt 2:00:00 45 /scratch/project/crisp008/chris/NGS_project/test3/analysis/trimmed_align_bowtie2 py3.7 a_crisp)
 
