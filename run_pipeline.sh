@@ -7,8 +7,15 @@
 #SBATCH --partition=general
 #SBATCH --requeue
 
+# Set variables 
+path_to_sample_list=/scratch/project/crisp008/chris/NGS_project/inputs/samples.txt
+path_to_qc=/home/s4669612/gitrepos/crisplab_wgs/01-qc_sbatch.sh
+path_to_trim=/home/s4669612/gitrepos/crisplab_wgs/01-trim_galore_gz_sbatch.sh
+path_to_bowtie=/home/s4669612/gitrepos/crisplab_wgs/02-bowtie2_sbatch.sh
+path_to_reference=/scratch/project/crisp008/chris/NGS_project/inputs/sorghum/Sbicolor_454_v3.0.1_vectors
+
 # Submit the first job and get the job ID
-fastqc_job=$(sbatch --parsable /home/s4669612/gitrepos/crisplab_wgs/01-qc_sbatch.sh ../samples.txt 2:00:00 8 a_crisp)
+fastqc_job=$(sbatch --parsable "$path_to_qc" "$path_to_sample_list" 2:00:00 8 a_crisp)
 
 # Run MultiQC after FastQC is done
 if [[ $SLURM_ARRAY_TASK_ID == 2 ]]; then
@@ -19,12 +26,8 @@ if [[ $SLURM_ARRAY_TASK_ID == 2 ]]; then
 fi
 
 # Submit the second job and set its dependency on the first job
-trim_galore_job=$(sbatch --parsable --dependency=afterok:$fastqc_job /home/s4669612/gitrepos/crisplab_wgs/01-trim_galore_gz_sbatch.sh ../samples.txt 20:00:00 16 a_crisp)
+trim_galore_job=$(sbatch --parsable --dependency=afterok:$fastqc_job "$path_to_trim" "$path_to_sample_list" 20:00:00 16 a_crisp)
 
 # Submit the third job and set its dependency on the second job
-bowtie2_job=$(sbatch --parsable --dependency=afterok:$trim_galore_job /home/s4669612/gitrepos/crisplab_wgs/02-bowtie2_sbatch.sh ../samples.txt trimmed 6 /scratch/project/crisp008/chris/NGS_project/sorghum/Sbicolor_454_v3.0.1_vectors 10 18:00:00 40 a_crisp)
-
-# Submit the fourth job and set its dependency on the third job
-deeptools_job=$(sbatch --parsable --dependency=afterok:$bowtie2_job /home/s4669612/gitrepos/crisplab_wgs/03b-deeptools_bigWig_sbatch.sh ../samples.txt 2:00:00 45 /scratch/project/crisp008/chris/NGS_project/test3/analysis/trimmed_align_bowtie2 py3.7 a_crisp)
-
+bowtie2_job=$(sbatch --parsable --dependency=afterok:$trim_galore_job "$path_to_trim" "$path_to_sample_list" trimmed 6 "$path_to_reference" 10 18:00:00 40 a_crisp)
 
