@@ -6,6 +6,7 @@
 #SBATCH --array=1-4%1
 #SBATCH --partition=general
 #SBATCH --requeue
+#SBATCH --error=my_pipeline-%j.err
 
 # Set variables 
 path_to_sample_list=/scratch/project/crisp008/chris/NGS_project/inputs/samples.txt
