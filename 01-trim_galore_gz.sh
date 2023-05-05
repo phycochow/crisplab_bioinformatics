@@ -38,7 +38,7 @@ fastqcfolder=analysis/fastqc
 mkdir -p $fastqcfolder
 
 # check if single or paired end or unzipped by looking for R2 file
-if [ -e "/scratch/project/crisp008/chris/NGS_project/inputs/reads/${ID}_R2_001.fastq.gz" ] || [ -e "/scratch/project/crisp008/chris/NGS_project/inputs/reads/${ID}_R2.fastq.gz" ]; then
+if [ -e "/scratch/project/crisp008/chris/NGS_project/inputs/reads/${ID}_R2_001.fastq" ] || [ -e "/scratch/project/crisp008/chris/NGS_project/inputs/reads/${ID}_R2.fastq" ]; then
 
 echo "paired reads"
 
@@ -46,11 +46,7 @@ echo "paired reads"
 # for swift libraries this trimms 20bp from the 5' end of the R2 read to remove the adaptase tail.
 # Swift recommends symetrical trimming, so I trim from the R1 read too...
 
-trim_galore --phred33 --fastqc --fastqc_args "--noextract --outdir $fastqcfolder" -o $trimmedfolder --paired /scratch/project/crisp008/chris/NGS_project/inputs/reads/${ID}_R1*fastq.gz /scratch/project/crisp008/chris/NGS_project/inputs/reads/${ID}_R2*fastq.gz
-
-#compress original reads again
-#gzip /scratch/project/crisp008/chris/NGS_project/inputs/reads/${ID}_R1_001.fastq
-#gzip /scratch/project/crisp008/chris/NGS_project/inputs/reads/${ID}_R2_001.fastq
+trim_galore --phred33 --fastqc --fastqc_args "--noextract --outdir $fastqcfolder" -o $trimmedfolder --paired /scratch/project/crisp008/chris/NGS_project/inputs/reads/${ID}_R1*fastq /scratch/project/crisp008/chris/NGS_project/inputs/reads/${ID}_R2*fastq
 
 # check if single or paired end or unzipped by looking for R2 file
 elif [ -e "/scratch/project/crisp008/chris/NGS_project/inputs/reads/${ID}_R2_001.fastq" ] || [ -e "/scratch/project/crisp008/chris/NGS_project/inputs/reads/${ID}_R2.fastq" ]; then
@@ -63,23 +59,17 @@ echo "paired reads uncompressed"
 
 trim_galore --phred33 --fastqc --fastqc_args "--noextract --outdir $fastqcfolder" -o $trimmedfolder --paired /scratch/project/crisp008/chris/NGS_project/inputs/reads/${ID}_R1*fastq /scratch/project/crisp008/chris/NGS_project/inputs/reads/${ID}_R2*fastq
 
-#compress original reads again
-gzip /scratch/project/crisp008/chris/NGS_project/inputs/reads/${ID}_R1_001.fastq
-gzip /scratch/project/crisp008/chris/NGS_project/inputs/reads/${ID}_R2_001.fastq
 
-elif [ -e "/scratch/project/crisp008/chris/NGS_project/inputs/reads/${ID}_R1_001.fastq.gz" ] || [ -e "/scratch/project/crisp008/chris/NGS_project/inputs/reads/${ID}_R1.fastq.gz" ]; then
+elif [ -e "/scratch/project/crisp008/chris/NGS_project/inputs/reads/${ID}_R1_001.fastq" ] || [ -e "/scratch/project/crisp008/chris/NGS_project/inputs/reads/${ID}_R1.fastq" ]; then
   # single end compressed
   ########## Run #################
   # for swift libraries this trimms 20bp from the 5' end of the R2 read to remove the adaptase tail.
   # Swift recommends symetrical trimming, so I trim from the R1 read too...
 
-  trim_galore --phred33 --fastqc --fastqc_args "--noextract --outdir $fastqcfolder" -o $trimmedfolder /scratch/project/crisp008/chris/NGS_project/inputs/reads/${ID}_R1*fastq.gz
+  trim_galore --phred33 --fastqc --fastqc_args "--noextract --outdir $fastqcfolder" -o $trimmedfolder /scratch/project/crisp008/chris/NGS_project/inputs/reads/${ID}_R1*fastq
 
 else
 echo "assuming single end uncompresed"
-
-#uncompress reads because trim_galore throws the error `gzip: stdout: Broken pipe` if I input .gz files
-#gunzip /scratch/project/crisp008/chris/NGS_project/inputs/reads/${ID}_R1_001.fastq.gz
 
 ########## Run #################
 # for swift libraries this trimms 20bp from the 5' end of the R2 read to remove the adaptase tail.
