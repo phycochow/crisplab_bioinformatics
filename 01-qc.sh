@@ -43,14 +43,14 @@ if (( "${#fastqs_count[@]}" == 2 )); then
 echo "paired reads"
 
 ########## Run #################
-fastqc -o $fastqcfolder ../inputs/reads/${ID}_R1*.fastq.gz ../inputs/reads/${ID}_R2*.fastq.gz
+fastqc -o $fastqcfolder ../inputs/reads/${ID}_R1*.fastq ../inputs/reads/${ID}_R2*.fastq
 
 else
 echo "assuming single end"
 
 ########## Run #################
 
-fastqc -o $fastqcfolder ../inputs/reads/${ID}_R1*.fastq.gz
+fastqc -o $fastqcfolder ../inputs/reads/${ID}_R1*.fastq
 
 fi
 
