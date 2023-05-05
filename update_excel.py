@@ -34,6 +34,7 @@ if __name__ == "__main__":
     """This runs the python file as a script and prevents the terminal from treating it as a module."""
     oooweeeeeeeeeeee()  # Updates a preexisting csv file
     """terminal input example: my_script.py chr1 my_bam_file.bam output.csv"""
+    """my_script.py Cloned_ykaf_nptII my_bam_file.bam output.csv"""
     """Specifically Cloned_ykaf_nptII and P2_P_Contig_1__zCas9"""
 
     "Z:\Chris_WGS_sorg\NGS_project\test2\analysis\trimmed_align_bowtie2\CPDI2-2___B6_sorted.bam"
