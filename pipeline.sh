@@ -2,11 +2,10 @@
 #SBATCH --job-name=my_pipeline
 #SBATCH --ntasks=1
 #SBATCH --mem-per-cpu=8G
-#SBATCH --time=48:00:00
-#SBATCH --array=1-4%1
+#SBATCH --time=24:00:00
+#SBATCH --array=1-3%1
 #SBATCH --partition=general
 #SBATCH --requeue
-#SBATCH --error=my_pipeline-%j.err
 
 # Set variables 
 path_to_sample_list=/scratch/project/crisp008/chris/NGS_project/inputs/samples.txt
