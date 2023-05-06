@@ -19,4 +19,4 @@ for percentage in "${percentages[@]}"; do
   done
 done
 
-bash run_pipeline.sh
+bash /home/s4669612/gitrepos/crisplab_wgs/run_pipeline.sh
