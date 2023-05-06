@@ -17,8 +17,8 @@ path_to_pipeline_script=/home/s4669612/gitrepos/crisplab_wgs/pipeline.sh
 for percentage in "${percentages[@]}"; do
 # Copy the raw_reads into the temporary read folder to be processed
   cd $working_dir
-  cp -r ../../raw_reads ../inputs/reads
-  for file in ../inputs/reads/*; do
+  for file in -r ../../raw_reads/*; do
+    cp "$file" ../inputs/reads
     /home/s4669612/software/seqtk/seqtk sample -s100 "$file" "$percentage" > "$file"
   done
   
