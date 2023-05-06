@@ -8,8 +8,6 @@
 #SBATCH --requeue
 #SBATCH --error=seqtk-sample-%j.err
 
-cp -r ../../raw_reads ../inputs/reads
-
 # Define the percentages for subsampling
 percentages=(1)
 
