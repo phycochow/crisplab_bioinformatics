@@ -15,11 +15,15 @@ for percentage in "${percentages[@]}"; do
 # Copy the raw_reads into the temporary read folder to be processed
   for file in ../../raw_reads/*; do
     cp "$file" ../inputs/reads
-    /home/s4669612/software/seqtk/seqtk sample -s100 "$file" "$percentage" > "${file%.fastq.gz}.fastq"
   done
   
-# Delete all compressed files
-  for file in ../../raw_reads/*.fastq.gz; do
+# Subsamples and uncompress the fastqz files
+  for file in ../inputs/reads/*; do
+    /home/s4669612/software/seqtk/seqtk sample -s100 "$file" "$percentage" > "${file%.fastq.gz}.fastq"
+  done
+      
+# Delete all compressed files in the new directory
+  for file in ../inputs/reads/*.fastq.gz; do
       rm "$file"
   done
   
