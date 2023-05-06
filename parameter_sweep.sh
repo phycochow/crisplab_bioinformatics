@@ -11,6 +11,7 @@
 # Define the percentages for subsampling
 percentages=(1)
 working_dir=/scratch/project/crisp008/chris/NGS_project/processing
+path_to_pipeline_script=/home/s4669612/gitrepos/crisplab_wgs/pipeline.sh
 
 # Loop over each percentage and process the files, the random seed -s100 is to ensure the subsampling works on the paired reads, it should work with any number
 for percentage in "${percentages[@]}"; do
@@ -23,6 +24,5 @@ for percentage in "${percentages[@]}"; do
   
 # Run script for each subsampled reads
   cd $working_dir
-  path_to_pipeline_script=/home/s4669612/gitrepos/crisplab_wgs/pipeline.sh
   run_pipeline_job=$(sbatch --parsable "$path_to_pipeline_script")
 done
