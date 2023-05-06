@@ -6,9 +6,20 @@
 #SBATCH --partition=general
 #SBATCH --requeue
 
-# Define the percentages for subsampling
-percentages=(1)
-path_to_pipeline_script=/home/s4669612/gitrepos/crisplab_wgs/pipeline.sh
+usage="USAGE:
+bash parameter_sweep.sh <list_of_percentages>"
+
+######### Setup ################
+
+# Check if the number of arguments is correct
+if [ $# -eq 0 ]; then
+  echo "Error: No percentages provided."
+  echo "$usage"
+  exit 1
+fi
+
+# Get the list of percentages from the command-line argument
+percentages=$@
 
 # Loop over each percentage and process the files, the random seed -s100 is to ensure the subsampling works on the paired reads, it should work with any number
 for percentage in "${percentages[@]}"; do
