@@ -19,7 +19,7 @@ for percentage in "${percentages[@]}"; do
   cd $working_dir
   for file in -r ../../raw_reads/*; do
     cp "$file" ../inputs/reads
-    /home/s4669612/software/seqtk/seqtk sample -s100 "$file" "$percentage" > "$file"
+    /home/s4669612/software/seqtk/seqtk sample -s100 "$file" "$percentage" > "${file%.fastq.gz}.fastq"
   done
   
 # Run script for each subsampled reads
