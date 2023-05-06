@@ -2,11 +2,9 @@
 #SBATCH --job-name=parameter_sweep
 #SBATCH --ntasks=1
 #SBATCH --mem-per-cpu=8G
-#SBATCH --time=48:00:00
-#SBATCH --array=1-4%1
+#SBATCH --time=2:00:00
 #SBATCH --partition=general
 #SBATCH --requeue
-#SBATCH --error=seqtk-sample-%j.err
 
 # Define the percentages for subsampling
 percentages=(1)
