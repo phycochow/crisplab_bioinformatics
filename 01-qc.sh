@@ -32,7 +32,6 @@ ID="$(/bin/sed -n ${SLURM_ARRAY_TASK_ID}p ${LIST})"
 fastqcfolder=analysis/fastqc_raw
 mkdir -p $fastqcfolder
 
-echo working dir is now $PWD
 # check how many satqs there are - assumes "fastq" suffix
 fastqs="$(find ../inputs/reads -type f -name ${ID}*.fastq*)"
 # convert to array to count elements
