@@ -29,7 +29,7 @@ def oooweeeeeeeeeeee():
     df.loc[len(df)] = [args.chromosome, start_index, end_index, mapped_reads]
 
     # write the output to an Excel file
-    df.to_excel(args.output_file, index=False)
+    df.to_csv(args.output_file, index=False)
 
 
 if __name__ == "__main__":
