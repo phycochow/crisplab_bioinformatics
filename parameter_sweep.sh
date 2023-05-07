@@ -11,6 +11,7 @@ bash parameter_sweep.sh <list_of_percentages>"
 
 ######### Setup ################
 path_to_pipeline_script=/home/s4669612/gitrepos/crisplab_wgs/pipeline.sh
+path_to_outputs=output.csv
 # Check if the number of arguments is correct
 if [ $# -eq 0 ]; then
   echo "Error: No percentages provided."
@@ -39,4 +40,14 @@ for percentage in "${percentages[@]}"; do
   done
   
   run_pipeline_job=$(sbatch --parsable "$path_to_pipeline_script")
+  
+  #Loop over each vector in the vector library - to be improved
+  vector_list=(P2_P_Contig_1__zCas9,Cloned_ykaf_nptII)
+  for vector in "${vector_list[@]}"; do
+    for file in *.bam; do 
+      python /home/s4669612/gitrepos/crisplab_wgs/update_excel.py "$vector" "$file" ../outputs/output.csv ; 
+    done
+  done
 done
+
+
