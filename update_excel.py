@@ -22,7 +22,7 @@ def oooweeeeeeeeeeee():
         if not read.is_unmapped:
             mapped_reads += 1
 
-    df = pd.readDataFrame(arg.output_file)
+    df = pd.read_csv(arg.output_file)
 
     # add row [chromosome, start, end, mapped reads]
     df.loc[len(df)] = [args.chromosome, args.start_pos, args.end_pos, mapped_reads]
