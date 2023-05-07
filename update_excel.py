@@ -36,7 +36,7 @@ def count_mapped_reads():
 
     # add row [chromosome, start, end, mapped reads]
 #     df.loc[len(df)] = [args.chromosome, args.start_pos, args.end_pos, mapped_reads, coverage_percentage]
-    df.loc[len(df)] = [args.chromosome, start_index, end_index, mapped_reads, coverage_percentage]
+    df.loc[len(df)] = [args.bam_file, args.chromosome, start_index, end_index, mapped_reads, coverage_percentage]
 
     # write the output to an Excel file
     df.to_csv(args.output_file, index=False)
