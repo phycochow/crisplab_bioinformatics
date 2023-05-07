@@ -25,7 +25,8 @@ def oooweeeeeeeeeeee():
     df = pd.read_csv(args.output_file)
 
     # add row [chromosome, start, end, mapped reads]
-    df.loc[len(df)] = [args.chromosome, args.start_pos, args.end_pos, mapped_reads]
+#     df.loc[len(df)] = [args.chromosome, args.start_pos, args.end_pos, mapped_reads]
+    df.loc[len(df)] = [args.chromosome, start_index, end_index, mapped_reads]
 
     # write the output to an Excel file
     df.to_excel(args.output_file, index=False)
