@@ -2,6 +2,7 @@ import pysam
 import argparse
 import pandas as pd
 
+
 def oooweeeeeeeeeeee():
     # parse the command-line arguments
     parser = argparse.ArgumentParser(description="Count mapped reads in a BAM file in a specific region.")
@@ -37,4 +38,4 @@ if __name__ == "__main__":
     """my_script.py Cloned_ykaf_nptII my_bam_file.bam output.csv"""
     """Specifically Cloned_ykaf_nptII and P2_P_Contig_1__zCas9"""
 
-    "Z:\Chris_WGS_sorg\NGS_project\test2\analysis\trimmed_align_bowtie2\CPDI2-2___B6_sorted.bam"
+    """Z:\Chris_WGS_sorg\NGS_project\test2\analysis\trimmed_align_bowtie2\CPDI2-2___B6_sorted.bam"""
