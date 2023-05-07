@@ -41,11 +41,28 @@ for percentage in "${percentages[@]}"; do
   
   run_pipeline_job=$(sbatch --parsable "$path_to_pipeline_script")
   
-  #Loop over each vector in the vector library - to be improved
-  vector_list=(P2_P_Contig_1__zCas9,Cloned_ykaf_nptII)
+   # Wait for the pipeline job to complete
+  if [ -n "$run_pipeline_job" ]; then
+    echo "Pipeline job submitted with job ID: $run_pipeline_job"
+    echo "Waiting for the pipeline job to complete..."
+    while true; do
+      job_status=$(squeue -j "$run_pipeline_job" -h -t PD,R)
+      if [ -z "$job_status" ]; then
+        echo "Pipeline job completed."
+        break
+      fi
+      sleep 30
+    done
+  else
+    echo "Error: Failed to submit the pipeline job."
+    exit 1
+  fi
+
+  # Loop over each vector in the vector library
+  vector_list=("P2_P_Contig_1__zCas9" "Cloned_ykaf_nptII")
   for vector in "${vector_list[@]}"; do
-    for file in *.bam; do 
-      python /home/s4669612/gitrepos/crisplab_wgs/update_excel.py "$vector" "$file" ../outputs/output.csv ; 
+    for file in analysis/trimmed_align_bowtie2/*.bam; do
+      python /home/s4669612/gitrepos/crisplab_wgs/update_excel.py "$vector" "$file" ../outputs/output.csv ;
     done
   done
 done
