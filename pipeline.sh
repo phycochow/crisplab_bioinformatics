@@ -31,3 +31,7 @@ trim_galore_job=$(sbatch --parsable --dependency=afterok:$fastqc_job "$path_to_t
 # Submit the third job and set its dependency on the second job
 bowtie2_job=$(sbatch --parsable --dependency=afterok:$trim_galore_job "$path_to_bowtie_script" "$path_to_sample_list" trimmed 6 "$path_to_reference" 10 18:00:00 40 a_crisp)
 
+# Submit the fourth job and set its dependency on the third job
+# path_to_trimmed_bowtie=/scratch/project/crisp008/chris/NGS_project/test3/analysis/trimmed_align_bowtie2
+# deeptools_job=$(sbatch --parsable --dependency=afterok:$bowtie2_job /home/s4669612/gitrepos/crisplab_wgs/WGS/03b-deeptools_bigWig_sbatch.sh "$path_to_sample_list" 2:00:00 45 "$path_to_trimmed_bowtie" py3.7 a_crisp)
+
