@@ -39,9 +39,8 @@ for percentage in "${percentages[@]}"; do
       rm "$file"
   done
   
+# Run and wait for the pipeline job to complete
   run_pipeline_job=$(sbatch --parsable "$path_to_pipeline_script")
-  
-   # Wait for the pipeline job to complete
   if [ -n "$run_pipeline_job" ]; then
     echo "Pipeline job submitted with job ID: $run_pipeline_job"
     echo "Waiting for the pipeline job to complete..."
@@ -58,13 +57,16 @@ for percentage in "${percentages[@]}"; do
     exit 1
   fi
 
-  # Loop over each vector in the vector library
+  # Store the ouputs: Loop over each vector in the vector library - to be improved (ask pete about coverage, read counts and other features logs)
   vector_list=("P2_P_Contig_1__zCas9" "Cloned_ykaf_nptII")
   for vector in "${vector_list[@]}"; do
     for file in analysis/trimmed_align_bowtie2/*.bam; do
       python /home/s4669612/gitrepos/crisplab_wgs/update_excel.py "$vector" "$file" ../outputs/output.csv ;
     done
   done
+# Delete and renew the reads folder for the next iteration, clearing the file may have potential bugs
+rm -r ../inputs/reads analysis logs
+mkdir ../inputs/reads analysis logs
 done
 
 
