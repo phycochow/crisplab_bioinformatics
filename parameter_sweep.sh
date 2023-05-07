@@ -10,7 +10,7 @@ usage="USAGE:
 bash parameter_sweep.sh <list_of_percentages>"
 
 ######### Setup ################
-
+path_to_pipeline_script=/home/s4669612/gitrepos/crisplab_wgs/pipeline.sh
 # Check if the number of arguments is correct
 if [ $# -eq 0 ]; then
   echo "Error: No percentages provided."
