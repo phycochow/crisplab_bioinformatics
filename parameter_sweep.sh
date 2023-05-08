@@ -30,40 +30,43 @@ for percentage in "${percentages[@]}"; do
   done
   
 # Subsamples and uncompress the fastqz files
-  for file in ../inputs/reads/*; do
-    /home/s4669612/software/seqtk/seqtk sample -s100 "$file" "$percentage" > "${file%.fastq.gz}.fastq"
-  done
+for file in ../inputs/reads/*; do
+  /home/s4669612/software/seqtk/seqtk sample -s100 "$file" "$percentage" > "${file%.fastq.gz}.fastq"
+done
       
 # Delete all compressed files in the new directory
-  for file in ../inputs/reads/*.fastq.gz; do
-      rm "$file"
-  done
+for file in ../inputs/reads/*.fastq.gz; do
+    rm "$file"
+done
   
 # Run and wait for the pipeline job to complete
-  run_pipeline_job=$(sbatch --parsable "$path_to_pipeline_script")
-  if [ -n "$run_pipeline_job" ]; then
-    echo "Pipeline job submitted with job ID: $run_pipeline_job"
-    echo "Waiting for the pipeline job to complete..."
-    while true; do
-      job_status=$(squeue -j "$run_pipeline_job" -h -t PD,R)
-      if [ -z "$job_status" ]; then
-        echo "Pipeline job completed."
-        break
-      fi
-      sleep 30
-    done
-  else
-    echo "Error: Failed to submit the pipeline job."
-    exit 1
-  fi
-
-  # Store the ouputs: Loop over each vector in the vector library - to be improved (ask pete about coverage, read counts and other features logs)
-  vector_list=("P2_P_Contig_1__zCas9" "Cloned_ykaf_nptII")
-  for vector in "${vector_list[@]}"; do
-    for file in analysis/trimmed_align_bowtie2/*.bam; do
-      python /home/s4669612/gitrepos/crisplab_wgs/update_excel.py "$vector" "$file" ../outputs/output.csv ;
-    done
+run_pipeline_job=$(sbatch --parsable "$path_to_pipeline_script")
+if [ -n "$run_pipeline_job" ]; then
+  echo "Pipeline job submitted with job ID: $run_pipeline_job"
+  echo "Waiting for the pipeline job to complete..."
+  while true; do
+    job_status=$(squeue -j "$run_pipeline_job" -h -t PD,R)
+    if [ -z "$job_status" ]; then
+      echo "Pipeline job completed."
+      break
+    fi
+    sleep 30
   done
+else
+  echo "Error: Failed to submit the pipeline job."
+  exit 1
+fi
+
+conda activate py3.7
+# Store the ouputs: Loop over each vector in the vector library - to be improved (ask pete about coverage, read counts and other features logs)
+vector_list=("P2_P_Contig_1__zCas9" "Cloned_ykaf_nptII")
+for vector in "${vector_list[@]}"; do
+  for file in analysis/trimmed_align_bowtie2/*.bam; do
+    python /home/s4669612/gitrepos/crisplab_wgs/update_excel.py "$vector" "$file" ../outputs/output.csv ;
+  done
+done
+conda deactivate
+
 # Delete and renew the reads folder for the next iteration, clearing the file may have potential bugs
 rm -r ../inputs/reads analysis logs
 mkdir ../inputs/reads analysis logs
