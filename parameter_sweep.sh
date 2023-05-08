@@ -57,7 +57,7 @@ else
   exit 1
 fi
 
-conda activate py3.7
+source /home/s4669612/miniconda3/bin/activate py3.7
 # Store the ouputs: Loop over each vector in the vector library - to be improved (ask pete about coverage, read counts and other features logs)
 vector_list=("P2_P_Contig_1__zCas9" "Cloned_ykaf_nptII")
 for vector in "${vector_list[@]}"; do
