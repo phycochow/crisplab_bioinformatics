@@ -66,10 +66,6 @@ for vector in "${vector_list[@]}"; do
   done
 done
 conda deactivate
-
-# Delete and renew the reads folder for the next iteration, clearing the file may have potential bugs
-rm -r ../inputs/reads analysis logs
-mkdir ../inputs/reads analysis logs
 done
 
 
