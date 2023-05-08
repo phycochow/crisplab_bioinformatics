@@ -37,3 +37,6 @@ bowtie2_job=$(sbatch --parsable --dependency=afterok:$trim_galore_job "$path_to_
 # path_to_trimmed_bowtie=/scratch/project/crisp008/chris/NGS_project/test3/analysis/trimmed_align_bowtie2
 # deeptools_job=$(sbatch --parsable --dependency=afterok:$bowtie2_job /home/s4669612/gitrepos/crisplab_wgs/WGS/03b-deeptools_bigWig_sbatch.sh "$path_to_sample_list" 2:00:00 45 "$path_to_trimmed_bowtie" py3.7 a_crisp)
 
+# Delete and renew the reads folder for the next iteration, clearing the file may have potential bugs
+rm -r ../inputs/reads analysis logs
+mkdir ../inputs/reads analysis logs
