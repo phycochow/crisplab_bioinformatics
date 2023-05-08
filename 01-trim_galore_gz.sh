@@ -78,7 +78,7 @@ echo "assuming single end uncompresed"
 trim_galore --phred33 --fastqc --fastqc_args "--noextract --outdir $fastqcfolder" -o $trimmedfolder /scratch/project/crisp008/chris/NGS_project/inputs/reads/${ID}_R1*fastq
 
 #compress original reads again
-gzip /scratch/project/crisp008/chris/NGS_project/inputs/reads/${ID}_R1_001.fastq
+# gzip /scratch/project/crisp008/chris/NGS_project/inputs/reads/${ID}_R1_001.fastq
 
 fi
 
