@@ -29,17 +29,17 @@ for percentage in "${percentages[@]}"; do
     cp "$file" ../inputs/reads
   done
   
-# Subsamples and uncompress the fastqz files
-for file in ../inputs/reads/*; do
-  /home/s4669612/software/seqtk/seqtk sample -s100 "$file" "$percentage" > "${file%.fastq.gz}.fastq"
-done
+  # Subsamples and uncompress the fastqz files
+  for file in ../inputs/reads/*; do
+   /home/s4669612/software/seqtk/seqtk sample -s100 "$file" "$percentage" > "${file%.fastq.gz}.fastq"
+  done
       
-# Delete all compressed files in the new directory
-for file in ../inputs/reads/*.fastq.gz; do
-    rm "$file"
-done
+  # Delete all compressed files in the new directory
+  for file in ../inputs/reads/*.fastq.gz; do
+      rm "$file"
+  done
   
-# Run and wait for the pipeline job to complete
-run_pipeline_job=$(sbatch --parsable "$path_to_pipeline_script")
-
-
+  # Run and wait for the pipeline job to complete
+  run_pipeline_job=$(sbatch --parsable "$path_to_pipeline_script")
+done
+ 
