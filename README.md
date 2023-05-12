@@ -1,2 +1,2 @@
 # Peter-Crisp's-lab-NGS-transgene-detection-project
-<!-- Create a bash file -->
+# The following script requires 4 files: outputs, inputs, processing
