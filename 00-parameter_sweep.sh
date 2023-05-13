@@ -32,10 +32,10 @@ path_to_extract_bam_features_script=/home/s4669612/gitrepos/crisplab_wgs/05-extr
 
 # Create read and processing directories with id 
 fastq_directory="inputs/reads$id"
-working_directory="processing$id"
+processing_directory="processing$id"
 
 # In case this script is run directly, make reads and processing folders
-mkdir -p "$fastq_directory" "$working_directory"
+mkdir -p "$fastq_directory" "$processing_directory"
 
 # Loop over each percentage and process the files
 for percentage in "${percentages[@]}"; do
@@ -55,8 +55,10 @@ for percentage in "${percentages[@]}"; do
   done
   
   # Go into the processing directory, run and wait for the pipeline job to complete, then obtain the data
-  cd $working_directory
+  cd $processing_directory
   run_pipeline_job=$(sbatch --parsable "$path_to_pipeline_script" "$fastq_directory")
-  extract_bam_features_job=$(sbatch --parsable --dependency=afterok:$run_pipeline_job)
+  
+  # Feature extraction section, make sure the file removal is in the last script here   
+  extract_bam_features_job=$(sbatch --parsable --dependency=afterok:$run_pipeline_job "$path_to_extract_bam_features_script" "$fastq_directory")
 done
  
