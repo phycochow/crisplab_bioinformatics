@@ -32,26 +32,22 @@ ID="$(/bin/sed -n ${SLURM_ARRAY_TASK_ID}p ${LIST})"
 fastqcfolder=analysis/fastqc_raw
 mkdir -p $fastqcfolder
 
-# check how many satqs there are - assumes "fastq" suffix
-fastqs="$(find ../inputs/reads -type f -name ${ID}*.fastq*)"
+# check how many fastqs there are - assumes "fastq" suffix
+fastqs="$(find ${FASTQ_DIR} -type f -name ${ID}*.fastq*)"
 # convert to array to count elements
 fastqs_count=($fastqs)
 
 # check if single or paired end by looking for R2 file
 if (( "${#fastqs_count[@]}" == 2 )); then
+  echo "paired reads"
 
-echo "paired reads"
-
-########## Run #################
-fastqc -o $fastqcfolder ../inputs/reads/${ID}_R1*.fastq ../inputs/reads/${ID}_R2*.fastq
-
+  ########## Run #################
+  fastqc -o $fastqcfolder ${FASTQ_DIR}/${ID}_R1*.fastq ${FASTQ_DIR}/${ID}_R2*.fastq
 else
-echo "assuming single end"
+  echo "assuming single end"
 
-########## Run #################
-
-fastqc -o $fastqcfolder ../inputs/reads/${ID}_R1*.fastq
-
+  ########## Run #################
+  fastqc -o $fastqcfolder ${FASTQ_DIR}/${ID}_R1*.fastq
 fi
 
-echo Done QC now you should run multiqc in output directory to summarise
+echo Done QC. Now you should run multiqc in the output directory to summarize.
