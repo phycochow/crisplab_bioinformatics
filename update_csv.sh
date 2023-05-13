@@ -18,13 +18,13 @@ source /home/s4669612/miniconda3/bin/activate py3.7
 vector_list=("P2_P_Contig_1__zCas9" "Cloned_ykaf_nptII")
 
 # Loop over each vector in the vector list
-for vector in "${vector_list[@]}"; do
+for vector_id in "${vector_list[@]}"; do
 
   # Loop over each BAM file in the trimmed_align_bowtie2 directory
   for file in analysis/trimmed_align_bowtie2/*.bam; do
   
     # Run the feature extraction script
-    python "$path_to_feature_script" "$vector" "$file" "$path_to_output_csv"
+    python "$path_to_feature_script" "$vector_id" "$file" "$path_to_output_csv"
   done
 done
 
