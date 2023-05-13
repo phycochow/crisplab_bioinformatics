@@ -28,6 +28,7 @@ current_dir=$(pwd)
 
 # Set up file paths
 path_to_pipeline_script=/home/s4669612/gitrepos/crisplab_wgs/00-pipeline.sh
+path_to_update_csv_script=/home/s4669612/gitrepos/crisplab_wgs/05-pipeline.sh
 fastq_directory="inputs/reads$id"
 working_directory="processing$id"
 
@@ -55,5 +56,7 @@ for percentage in "${percentages[@]}"; do
   cd $working_directory
   run_pipeline_job=$(sbatch --parsable "$path_to_pipeline_script" "$fastq_directory")
   cd $current_dir
+
+  update_csv_job=$(sbatch --parsable --dependency=afterok:$run_pipeline_job "$path_to_bowtie_script" "$path_to_sample_list" trimmed 6 "$path_to_reference" 10 18:00:00 40 a_crisp)
 done
  
