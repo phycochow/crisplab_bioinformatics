@@ -6,7 +6,19 @@
 #SBATCH --partition=general
 #SBATCH --requeue
 
+usage="USAGE:
+bash 05-extract_bam_features.sh <fastq_directory>"
+
 ######### Setup ################
+if [ $# -eq 0 ]; then
+  echo "Error: No percentages provided."
+  echo "$usage"
+  exit 1
+fi
+
+# Get the fastq directory from the command-line argument
+fastq_directory=$1
+
 # Set file paths
 path_to_feature_script=/home/s4669612/gitrepos/crisplab_wgs/feature_extraction.py
 path_to_output_csv=/scratch/project/crisp008/chris/NGS_project/outputs/output.csv
@@ -30,3 +42,7 @@ done
 
 # Deactivate conda environment
 conda deactivate
+
+# remove files starting in the processsing directory
+cd ..
+rm -r processing inputs/reads
