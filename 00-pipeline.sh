@@ -6,6 +6,9 @@
 #SBATCH --partition=general
 #SBATCH --requeue
 
+usage="USAGE:
+bash 00-pipeline.sh <fastq_directory>"
+
 ######### Setup ################
 # Check if the number of arguments is correct
 if [ $# -eq 0 ]; then
