@@ -7,39 +7,44 @@
 #SBATCH --requeue
 
 usage="USAGE:
-bash parameter_sweep.sh <list_of_percentages>"
+bash parameter_sweep.sh <list_of_percentages> <fastq_directory>"
 
 ######### Setup ################
-path_to_pipeline_script=/home/s4669612/gitrepos/crisplab_wgs/pipeline.sh
-path_to_outputs=output.csv
 # Check if the number of arguments is correct
-if [ $# -eq 0 ]; then
-  echo "Error: No percentages provided."
+if [ $# -lt 2 ]; then
+  echo "Error: Insufficient arguments."
   echo "$usage"
   exit 1
 fi
 
 # Get the list of percentages from the command-line argument
-percentages=$@
+percentages=("${@:1:$#-1}")
 
-# Loop over each percentage and process the files, the random seed -s100 is to ensure the subsampling works on the paired reads, it should work with any number
+# Get the fastq directory from the command-line argument
+fastq_directory="${@: -1}"
+
+# Set up file paths
+path_to_pipeline_script=/home/s4669612/gitrepos/crisplab_wgs/pipeline.sh
+path_to_outputs=output.csv
+
+# Loop over each percentage and process the files
 for percentage in "${percentages[@]}"; do
-# Copy the raw_reads into the temporary read folder to be processed
-  for file in ../../raw_reads/*; do
-    cp "$file" ../inputs/reads
+  # Copy the raw_reads into the temporary read folder to be processed
+  for file in "$fastq_directory"/*; do
+    cp "$file" "$fastq_directory"
   done
   
-  # Subsamples and uncompress the fastqz files
-  for file in ../inputs/reads/*; do
-   /home/s4669612/software/seqtk/seqtk sample -s100 "$file" "$percentage" > "${file%.fastq.gz}.fastq"
+  # Subsample and uncompress the fastq files
+  for file in "$fastq_directory"/*; do
+    /home/s4669612/software/seqtk/seqtk sample -s100 "$file" "$percentage" > "${file%.fastq.gz}.fastq"
   done
       
   # Delete all compressed files in the new directory
-  for file in ../inputs/reads/*.fastq.gz; do
-      rm "$file"
+  for file in "$fastq_directory"/*.fastq.gz; do
+    rm "$file"
   done
   
   # Run and wait for the pipeline job to complete
-  run_pipeline_job=$(sbatch --parsable "$path_to_pipeline_script")
+  run_pipeline_job=$(sbatch --parsable "$path_to_pipeline_script" "$fastq_directory")
 done
  
