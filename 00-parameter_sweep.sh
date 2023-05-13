@@ -28,11 +28,13 @@ current_dir=$(pwd)
 
 # Set up file paths
 path_to_pipeline_script=/home/s4669612/gitrepos/crisplab_wgs/00-pipeline.sh
-path_to_update_csv_script=/home/s4669612/gitrepos/crisplab_wgs/05-pipeline.sh
+path_to_extract_bam_features_script=/home/s4669612/gitrepos/crisplab_wgs/05-extract_bam_features.sh
+
+# Create read and processing directories with id 
 fastq_directory="inputs/reads$id"
 working_directory="processing$id"
 
-# In case this script is run directly, make reads folder
+# In case this script is run directly, make reads and processing folders
 mkdir -p "$fastq_directory" "$working_directory"
 
 # Loop over each percentage and process the files
@@ -52,11 +54,9 @@ for percentage in "${percentages[@]}"; do
     rm "$file"
   done
   
-  # Run and wait for the pipeline job to complete
+  # Go into the processing directory, run and wait for the pipeline job to complete, then obtain the data
   cd $working_directory
   run_pipeline_job=$(sbatch --parsable "$path_to_pipeline_script" "$fastq_directory")
-  cd $current_dir
-
-  update_csv_job=$(sbatch --parsable --dependency=afterok:$run_pipeline_job "$path_to_bowtie_script" "$path_to_sample_list" trimmed 6 "$path_to_reference" 10 18:00:00 40 a_crisp)
+  extract_bam_features_job=$(sbatch --parsable --dependency=afterok:$run_pipeline_job)
 done
  
