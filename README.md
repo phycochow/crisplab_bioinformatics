@@ -1,5 +1,5 @@
 # Peter-Crisp's-lab-NGS-transgene-detection-project
-This script extract features from NGS data through subsampling and mapping it to bacterial vectors. The features combined with the known ground truth of the transgenic samples enable supervised learning. This is a project only made possible by the inspiring Dr Peter Crisp and awesome soon-to-be-PhD-student Vanessa at the University of Queensland.
+This script extract features from NGS data through subsampling and mapping it to bacterial vectors. The features combined with the known ground truth of the transgenic samples enable supervised learning. This is a project only made possible by Dr Peter Crisp at the University of Queensland.
  
 To install, go to terminal and:
 ```bash
