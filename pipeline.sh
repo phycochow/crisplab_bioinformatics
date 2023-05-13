@@ -6,7 +6,18 @@
 #SBATCH --partition=general
 #SBATCH --requeue
 
-# Set variables 
+######### Setup ################
+# Check if the number of arguments is correct
+if [ $# -eq 0 ]; then
+  echo "Error: No percentages provided."
+  echo "$usage"
+  exit 1
+fi
+
+# Get the fastq directory from the command-line argument
+fastq_directory=$1
+
+# Set file paths 
 path_to_sample_list=/scratch/project/crisp008/chris/NGS_project/inputs/samples.txt
 path_to_qc_script=/home/s4669612/gitrepos/crisplab_wgs/01-qc_sbatch.sh
 path_to_trim_script=/home/s4669612/gitrepos/crisplab_wgs/01-trim_galore_gz_sbatch.sh
@@ -15,7 +26,7 @@ path_to_reference=/scratch/project/crisp008/chris/NGS_project/inputs/sorghum/Sbi
 
 # Submit the first job and get the job ID
 cd /scratch/project/crisp008/chris/NGS_project/processing
-fastqc_job=$(sbatch --parsable "$path_to_qc_script" "$path_to_sample_list" 2:00:00 8 a_crisp)
+fastqc_job=$(sbatch --parsable "$path_to_qc_script" "$path_to_sample_list" 2:00:00 8 a_crisp, "$fastq_directory")
 
 # Run MultiQC after FastQC is done
 if [[ $SLURM_ARRAY_TASK_ID == 2 ]]; then
