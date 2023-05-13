@@ -13,24 +13,24 @@ sample_list=$1
 walltime=$2
 mem=$3
 account_department=$4
+fastq_dir=$5
 
-if [ "$#" -lt "4" ]
-then
-echo $usage
-exit -1
+
+if [ "$#" -lt "4" ]; then
+  echo $usage
+  exit -1
 else
-echo "Submitting samples listed in '$sample_list' for QC"
-cat $sample_list
+  echo "Submitting samples listed in '$sample_list' for QC"
+  cat $sample_list
 fi
 
 #number of samples
 # qsub -J only takes a range to hack for 1 samples create a second sample in the input list called "NULL" - should work?
 number_of_samples=`wc -l $sample_list | awk '{print $1}'`
-if [[ "$number_of_samples" -eq 1 ]]
-then
-sbatch_t=1
+if [[ "$number_of_samples" -eq 1 ]]; then
+  sbatch_t=1
 else
-sbatch_t="1-${number_of_samples}"
+  sbatch_t="1-${number_of_samples}"
 fi
 echo "argument to be passed to sbatch -t is '$sbatch_t'"
 
@@ -67,6 +67,6 @@ sbatch --array $sbatch_t \
 --mem ${mem}gb \
 -o ${log_folder}/${step}_o_%A_%a \
 -e ${log_folder}/${step}_e_%A_%a \
---export LIST=${sample_list} \
+--export LIST=${sample_list},FASTQ_DIR=${fastq_dir} \
 --account $account_department \
 $script_to_sbatch
