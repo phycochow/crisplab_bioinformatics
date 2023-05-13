@@ -24,7 +24,7 @@ percentages=("${@:1:$#-1}")
 fastq_directory="${@: -1}"
 
 # Set up file paths
-path_to_pipeline_script=/home/s4669612/gitrepos/crisplab_wgs/pipeline.sh
+path_to_pipeline_script=/home/s4669612/gitrepos/crisplab_wgs/00-pipeline.sh
 path_to_outputs=output.csv
 
 # Loop over each percentage and process the files
