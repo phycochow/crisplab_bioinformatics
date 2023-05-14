@@ -36,10 +36,10 @@ echo sample being mapped is $ID
 # enter analysis folder
 cd analysis
 
-# check how many faqs there are
-fastqs="$(find $reads_folder -type f -name ${ID}_*.fq*)"
-# convert to array to count elements
-fastqs_count=($fastqs)
+# # check how many faqs there are
+# fastqs="$(find $reads_folder -type f -name ${ID}_*.fq*)"
+# # convert to array to count elements
+# fastqs_count=($fastqs)
 
 #make adaligned folder bowtie2 (caution this will not fail if dir already exists)
 outdir="${reads_folder}_align_bowtie2"
@@ -80,7 +80,7 @@ outbam="${outdir}/${ID}_sorted.bam"
 # Still, this mode can be effective and fast in situations where the user cares more about whether a read aligns
 # (or aligns a certain number of times) than where exactly it originated.
 
-if (( "${#fastqs_count[@]}" == 2 )); then
+# if (( "${#fastqs_count[@]}" == 2 )); then
 
 echo "paired reads"
 
@@ -100,20 +100,20 @@ bowtie2 \
 -2 $fq_2 \
 -S "$outsam"
 
-else
-echo "assuming single end"
+# else
+# echo "assuming single end"
 
-bowtie2 \
--x $bt2_genome \
---phred33 \
---local \
---very-sensitive-local \
--X 2000 \
--p $bt2_threads \
--U $fastqs \
--S "$outsam"
+# bowtie2 \
+# -x $bt2_genome \
+# --phred33 \
+# --local \
+# --very-sensitive-local \
+# -X 2000 \
+# -p $bt2_threads \
+# -U $fastqs \
+# -S "$outsam"
 
-fi
+# fi
 
 # count total alignments before after filtering
 echo "${ID} total alignments before MAPQ filter (might include reads that map to multiple locations)"
