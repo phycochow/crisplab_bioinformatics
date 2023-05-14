@@ -31,7 +31,7 @@ path_to_extract_bam_features_script=/home/s4669612/gitrepos/crisplab_wgs/05-extr
 
 # Submit the first job and get the job ID
 cd processing_directory
-fastqc_job=$(sbatch --parsable "$path_to_qc_script" "$path_to_sample_list" 2:00:00 8 a_crisp, "$fastq_directory")
+fastqc_job=$(sbatch --parsable --partition=general "$path_to_qc_script" "$path_to_sample_list" 2:00:00 8 a_crisp, "$fastq_directory")
 
 # Run MultiQC after FastQC is done
 if [[ $SLURM_ARRAY_TASK_ID == 2 ]]; then
@@ -43,7 +43,7 @@ fi
 
 # Submit the second job and set its dependency on the first job
 cd processing_directory
-trim_galore_job=$(sbatch --parsable --dependency=afterok:$fastqc_job "$path_to_trim_script" "$path_to_sample_list" 20:00:00 16 a_crisp)
+trim_galore_job=$(sbatch --parsable --partition=general --dependency=afterok:$fastqc_job "$path_to_trim_script" "$path_to_sample_list" 20:00:00 16 a_crisp)
 
 
 # Exttract trim features after trim is done
@@ -55,7 +55,7 @@ fi
 
 # Submit the third job and set its dependency on the second job
 cd processing_directory
-bowtie2_job=$(sbatch --parsable --dependency=afterok:$trim_galore_job "$path_to_bowtie_script" "$path_to_sample_list" trimmed 6 "$path_to_reference" 10 18:00:00 40 a_crisp)
+bowtie2_job=$(sbatch --parsable --partition=general --dependency=afterok:$trim_galore_job "$path_to_bowtie_script" "$path_to_sample_list" trimmed 6 "$path_to_reference" 10 18:00:00 40 a_crisp)
 
 
 # Feature extraction section, make sure the file removal is in the last script here   
@@ -63,7 +63,7 @@ bowtie2_job=$(sbatch --parsable --dependency=afterok:$trim_galore_job "$path_to_
 
 
 
-extract_bam_features_job=$(sbatch --parsable --dependency=afterok:$bowtie2_job "$path_to_extract_bam_features_script" "$fastq_directory")
+extract_bam_features_job=$(sbatch --parsable --partition=general --dependency=afterok:$bowtie2_job "$path_to_extract_bam_features_script" "$fastq_directory")
 
 # Submit the fourth job and set its dependency on the third job
 # path_to_trimmed_bowtie=/scratch/project/crisp008/chris/NGS_project/test3/analysis/trimmed_align_bowtie2
