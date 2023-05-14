@@ -13,7 +13,7 @@
 path_to_parameter_sweep_script=/home/s4669612/gitrepos/crisplab_wgs/00-parameter_sweep.sh
 
 # Construct the list of percentages - constant throughout the script
-percentages=($(seq 0.0009 0.01 0.9909))
+percentages=($(seq 0.01 0.01 0.96))
 
 # Set the total number of job arrays
 total_arrays=9600
