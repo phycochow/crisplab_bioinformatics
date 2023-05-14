@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=Chris_NGS
+#SBATCH --job-name=My_NGS
 #SBATCH --nodes=2
 #SBATCH --ntasks-per-node=96
 #SBATCH --cpus-per-task=1
