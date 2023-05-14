@@ -1,19 +1,10 @@
 #!/bin/bash
-#SBATCH --job-name=NGS_00_parameter_sweep
-#SBATCH --ntasks=1
-#SBATCH --mem-per-cpu=8G
-#SBATCH --time=2:00:00
-#SBATCH --partition=general
-#SBATCH --requeue
-
-#!/bin/bash
 #SBATCH --job-name=NGS_parameter_sweep
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
 #SBATCH --mem-per-cpu=10G
-#SBATCH --array=1-9600%96  # Run in batches of 96, up to a total of 9600 times
-#SBATCH --time=200:00:00
+#SBATCH --time=99:00:00
 #SBATCH --partition=general
 #SBATCH --account=a_crisp
 
@@ -40,8 +31,6 @@ current_dir=$(pwd)
 
 # Set up file paths
 path_to_pipeline_script=/home/s4669612/gitrepos/crisplab_wgs/00-pipeline.sh
-path_to_extract_bam_features_script=/home/s4669612/gitrepos/crisplab_wgs/05-extract_bam_features.sh
-
 
 # Loop over each percentage and process the files
 for percentage in "${percentages[@]}"; do
