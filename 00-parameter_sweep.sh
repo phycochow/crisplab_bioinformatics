@@ -1,10 +1,22 @@
 #!/bin/bash
-#SBATCH --job-name=parameter_sweep
+#SBATCH --job-name=NGS_00_parameter_sweep
 #SBATCH --ntasks=1
 #SBATCH --mem-per-cpu=8G
 #SBATCH --time=2:00:00
 #SBATCH --partition=general
 #SBATCH --requeue
+
+#!/bin/bash
+#SBATCH --job-name=NGS_parameter_sweep
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem-per-cpu=10G
+#SBATCH --array=1-9600%96  # Run in batches of 96, up to a total of 9600 times
+#SBATCH --time=200:00:00
+#SBATCH --partition=general
+#SBATCH --account=a_crisp
+
 
 usage="USAGE:
 bash parameter_sweep.sh <list_of_percentages> <id>"
@@ -30,15 +42,15 @@ current_dir=$(pwd)
 path_to_pipeline_script=/home/s4669612/gitrepos/crisplab_wgs/00-pipeline.sh
 path_to_extract_bam_features_script=/home/s4669612/gitrepos/crisplab_wgs/05-extract_bam_features.sh
 
-# Create read and processing directories with id 
-fastq_directory="inputs/reads$id"
-processing_directory="processing$id"
-
-# In case this script is run directly, make reads and processing folders
-mkdir -p "$fastq_directory" "$processing_directory"
 
 # Loop over each percentage and process the files
 for percentage in "${percentages[@]}"; do
+
+  # Store and create read and processing directories with id and percentage
+  fastq_directory="inputs/reads$id"_"$percentage"
+  processing_directory="processing$id"_"$percentage"
+  mkdir "$fastq_directory" "$processing_directory"
+  
   # Copy the raw_reads into the temporary read folder to be processed
   for file in inputs/raw_reads_template/; do
     cp "$file" "$fastq_directory"
@@ -56,9 +68,6 @@ for percentage in "${percentages[@]}"; do
   
   # Go into the processing directory, run and wait for the pipeline job to complete, then obtain the data
   cd $processing_directory
-  run_pipeline_job=$(sbatch --parsable "$path_to_pipeline_script" "$fastq_directory")
-  
-  # Feature extraction section, make sure the file removal is in the last script here   
-  extract_bam_features_job=$(sbatch --parsable --dependency=afterok:$run_pipeline_job "$path_to_extract_bam_features_script" "$fastq_directory")
+  run_pipeline_job=$(sbatch --parsable "$path_to_pipeline_script" "$fastq_directory" "$processing_directory")
 done
  
