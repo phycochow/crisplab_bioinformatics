@@ -9,7 +9,7 @@
 #SBATCH --account=a_crisp
 
 usage="USAGE:
-bash 05-extract_bam_features.sh <fastq_directory> <processing_directory>"
+bash 05-feature_extraction.sh <fastq_directory> <processing_directory>"
 
 #################################### Setup ########################################
 if [ $# -eq 0 ]; then
