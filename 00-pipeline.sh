@@ -19,13 +19,21 @@ if [ $# -eq 0 ]; then
   exit 1
 fi
 
-# Get the fastq directory from the command-line argument
+# Get the directories from the command-line argument
 fastq_directory=$1
 processing_directory=$2
+inputs_directory="$fastq_directory"/..
 
 # Set file paths 
 path_to_sample_list=/scratch/project/crisp008/chris/NGS_project/inputs/samples.txt
 path_to_reference=/scratch/project/crisp008/chris/NGS_project/inputs/sorghum/Sbicolor_454_v3.0.1_vectors
+path_to_qc_script=/home/s4669612/gitrepos/crisplab_wgs/01-qc_sbatch.sh
+path_to_trim_script=/home/s4669612/gitrepos/crisplab_wgs/01-trim_galore_gz_sbatch.sh
+path_to_bowtie_script=/home/s4669612/gitrepos/crisplab_wgs/02-bowtie2_sbatch.sh
+path_to_feature_extraction_script=/home/s4669612/gitrepos/crisplab_wgs/05-feature_extraction.sh
+
+path_to_sample_list="$inputs_directory"/samples.txt
+path_to_reference="$inputs_directory"/sorghum/Sbicolor_454_v3.0.1_vectors
 path_to_qc_script=/home/s4669612/gitrepos/crisplab_wgs/01-qc_sbatch.sh
 path_to_trim_script=/home/s4669612/gitrepos/crisplab_wgs/01-trim_galore_gz_sbatch.sh
 path_to_bowtie_script=/home/s4669612/gitrepos/crisplab_wgs/02-bowtie2_sbatch.sh
