@@ -6,19 +6,35 @@ import pandas as pd
 def count_mapped_reads():
     # parse the command-line arguments
     parser = argparse.ArgumentParser(description="Count mapped reads in a BAM file in a specific region.")
-    parser.add_argument("chromosome", type=str, help="Chromosome name (e.g. chr1)")
+    parser.add_argument("vector_id", type=str, help="Chromosome name (e.g. chr1)")
     # parser.add_argument("start_pos", type=int, help="Start position of the region of interest")
     # parser.add_argument("end_pos", type=int, help="End position of the region of interest")
     parser.add_argument("bam_file", type=str, help="Name of the BAM file to analyze")
+    parser.add_argument("sample_name", type=str, help="Name of sample")
     parser.add_argument("output_file", type=str, help="Name of the output Excel file")
+    
+#     
+    parser.add_argument("read_count", type=float, help="Read Count")
+    parser.add_argument("percent_reads_adapter_r1", type=float, help="Percent reads with adapter R1")
+    parser.add_argument("percent_reads_adapter_r2", type=float, help="Percent reads with adapter R2")
+    parser.add_argument("percent_bp_trimmed_r1", type=float, help="Percent basepairs trimmed R1")
+    parser.add_argument("percent_bp_trimmed_r2", type=float, help="Percent basepairs trimmed R2")
+    parser.add_argument("raligned_1_time", type=float, help="Average alignment time (s)")
+    parser.add_argument("multi_mappings", type=float, help="Percent reads mapped to multiple locations")
+    parser.add_argument("unmapped", type=float, help="Percent unmapped reads")
+    parser.add_argument("total_alignments", type=float, help="Total number of alignments")
+    parser.add_argument("mapq10", type=float, help="Percent reads with mapping quality >= 10")
+    parser.add_argument("mapq10_percent", type=float, help="Percent of mapped reads")
+
+#    
     args = parser.parse_args()
 
     # open the BAM file
     bamfile = pysam.AlignmentFile(args.bam_file, "rb")
 
     # iterate over the reads in the region of interest
-    mapped_reads, start_index, end_index = 0, 0, bamfile.get_reference_length(args.chromosome)
-    for read in bamfile.fetch(args.chromosome, start_index, end_index):
+    mapped_reads, start_index, end_index = 0, 0, bamfile.get_reference_length(args.vector_id)
+    for read in bamfile.fetch(args.vector_id, start_index, end_index):
         if not read.is_unmapped:
             mapped_reads += 1
     
@@ -35,7 +51,13 @@ def count_mapped_reads():
     df = pd.read_csv(args.output_file)
 
     # add row [sample, bacteria_vector, start, end, mapped reads]
-    new_row = [str(args.bam_file)[31:-11], args.chromosome, start_index, end_index, mapped_reads, coverage_percentage]
+    new_row = [str(args.sample_name, 
+               args.chromosome, 
+               start_index, 
+               end_index, 
+               mapped_reads, 
+               coverage_percentage, 
+               ]
     df.loc[len(df)] = new_row
 
     # write the output to an Excel file
