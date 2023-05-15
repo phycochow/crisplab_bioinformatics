@@ -22,6 +22,7 @@ fi
 # Get the directories from the command-line argument
 fastq_directory=$1
 processing_directory=$2
+percentage=$3
 inputs_directory="$fastq_directory"/..
 
 # Set file paths 
@@ -56,7 +57,7 @@ bowtie2_job=$(sbatch --parsable --partition=general --dependency=afterok:$trim_g
 
 # Submit the forth job and set its dependency on the third job
 cd "$processing_directory"
-extract_bam_features_job=$(sbatch --parsable --partition=general --dependency=afterok:$bowtie2_job "$path_to_feature_extraction_script" "$processing_directory")
+extract_bam_features_job=$(sbatch --parsable --partition=general --dependency=afterok:$bowtie2_job "$path_to_feature_extraction_script" "$processing_directory" "$percentage")
 
 
 
