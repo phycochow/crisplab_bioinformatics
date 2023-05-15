@@ -50,13 +50,24 @@ def count_mapped_reads():
 
     df = pd.read_csv(args.output_file)
 
-    # add row [sample, bacteria_vector, start, end, mapped reads]
-    new_row = [str(args.sample_name, 
+    # add row 
+    new_row = [args.sample_name, 
                args.chromosome, 
                start_index, 
                end_index, 
                mapped_reads, 
                coverage_percentage, 
+               args.read_count, 
+               args.percent_reads_adapter_r1,
+               args.percent_reads_adapter_r2, 
+               args.percent_bp_trimmed_r1,
+               args.percent_bp_trimmed_r2,
+               args.raligned_1_time,
+               args.multi_mappings,
+               args.unmapped, 
+               args.total_alignments, 
+               args.mapq10, 
+               args.mapq10_percent
                ]
     df.loc[len(df)] = new_row
 
