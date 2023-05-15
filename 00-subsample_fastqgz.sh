@@ -10,7 +10,7 @@
 #SBATCH --account=a_crisp
 
 usage="USAGE:
-bash 00-subsample_fastqgz.sh <fastq_directory> <percentage>
+sbatch 00-subsample_fastqgz.sh <fastq_directory> <percentage>"
 
 #################################### Setup ########################################
 # Check if the number of arguments is correct
