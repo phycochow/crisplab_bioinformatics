@@ -114,12 +114,12 @@ for path_to_file in analysis/trimmed_align_bowtie2/*.bam; do
 
   # Check if row1 exists
     if [[ -n "$row1" ]]; then
-    # Extract the values from the row1 and store them in separate variables
+    # Extract the values from the row1 and store them in separate variables, gsub(/[\(\)%]/ replaces ()% symbols with empty string
       read_count=$(echo "$row1" | awk -F'\t' '{gsub(/[\(\)]/, "", $2); print $2}')
-      percent_reads_adapter_r1=$(echo "$row1" | awk -F'\t' '{gsub(/[\(\)]/, "", $3); print $3}')
-      percent_reads_adapter_r2=$(echo "$row1" | awk -F'\t' '{gsub(/[\(\)]/, "", $4); print $4}')
-      percent_bp_trimmed_r1=$(echo "$row1" | awk -F'\t' '{gsub(/[\(\)]/, "", $5); print $5}')
-      percent_bp_trimmed_r2=$(echo "$row1" | awk -F'\t' '{gsub(/[\(\)]/, "", $6); print $6}')
+      percent_reads_adapter_r1=$(echo "$row1" | awk -F'\t' '{gsub(/[\(\)%]/, "", $3); print $3}')
+      percent_reads_adapter_r2=$(echo "$row1" | awk -F'\t' '{gsub(/[\(\)%]/, "", $4); print $4}')
+      percent_bp_trimmed_r1=$(echo "$row1" | awk -F'\t' '{gsub(/[\(\)%]/, "", $5); print $5}')
+      percent_bp_trimmed_r2=$(echo "$row1" | awk -F'\t' '{gsub(/[\(\)%]/, "", $6); print $6}')
     else
       read_count=0
       percent_reads_adapter_r1=0
@@ -131,9 +131,9 @@ for path_to_file in analysis/trimmed_align_bowtie2/*.bam; do
     # Check if row2 exists
     if [[ -n "$row2" ]]; then
       # Extract the values from the row2 and store them in separate variables
-      raligned_1_time=$(echo "$row2" | awk -F'\t' '{gsub(/[\(\)]/, "", $2); print $2}')
-      multi_mappings=$(echo "$row2" | awk -F'\t' '{gsub(/[\(\)]/, "", $3); print $3}')
-      unmapped=$(echo "$row2" | awk -F'\t' '{gsub(/[\(\)]/, "", $4); print $4}')
+      raligned_1_time=$(echo "$row2" | awk -F'\t' '{gsub(/[\(\)%]/, "", $2); print $2}')
+      multi_mappings=$(echo "$row2" | awk -F'\t' '{gsub(/[\(\)%]/, "", $3); print $3}')
+      unmapped=$(echo "$row2" | awk -F'\t' '{gsub(/[\(\)%]/, "", $4); print $4}')
     else
       raligned_1_time=0
       multi_mappings=0
