@@ -18,9 +18,6 @@ percentages=($(seq 0.01 0.01 0.96))
 # Set the total number of job arrays
 total_arrays=9600
 
-# Path to the script for each job array
-path_to_job_script=/path/to/your/job_script.sh
-
 # Loop over the number of job arrays
 for ((id=1; id<=total_arrays; id++)); do
   # Submit each job array with dependency on the previous job array
