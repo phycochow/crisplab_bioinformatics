@@ -10,7 +10,7 @@
 
 # To be run in the parent directory of processing with access to inputs and oututs
 usage="USAGE:
-bash parameter_sweep.sh <list_of_percentages> <id>"
+bash 00-parameter_sweep.sh <list_of_percentages> <id>"
 
 #################################### Setup ########################################
 # Check if the number of arguments is correct
