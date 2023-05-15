@@ -4,7 +4,7 @@
 #SBATCH --ntasks-per-node=96
 #SBATCH --cpus-per-task=1
 #SBATCH --mem-per-cpu=2G
-#SBATCH --array=1-9600%96  # Run in batches of 96, up to a total of 9600 times
+#SBATCH --array=1-400%4  # Run in batches of 96, up to a total of 9600 times
 #SBATCH --time=200:00:00
 #SBATCH --partition=general
 #SBATCH --account=a_crisp
