@@ -9,7 +9,7 @@
 #SBATCH --account=a_crisp
 
 usage="USAGE:
-bash 05-feature_extraction.sh <fastq_directory> <processing_directory>"
+bash 05-feature_extraction.sh <processing_directory>"
 
 #################################### Setup ########################################
 if [ $# -eq 0 ]; then
@@ -19,8 +19,7 @@ if [ $# -eq 0 ]; then
 fi
 
 # Get the fastq directory from the command-line argument
-fastq_directory=$1
-processing_directory=$2
+processing_directory=$1
 
 # Set file paths
 path_to_update_script=/home/s4669612/gitrepos/crisplab_wgs/update_csv.py
@@ -164,5 +163,5 @@ conda deactivate
 
 # remove the processsing and reads directory - end of the script
 cd "$processing_directory"/..
-rm -r "$processing_directory" "$fastq_directory"
+rm -r "$processing_directory"
 
