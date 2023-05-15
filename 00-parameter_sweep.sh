@@ -40,8 +40,8 @@ for percentage in "${percentages[@]}"; do
   cd "$working_directory"
   
   # Store and create read and processing directories with id and percentage
-  fastq_directory="inputs/reads$id"_"$percentage"
-  processing_directory="processing$id"_"$percentage"
+  fastq_directory="$working_directory"/inputs/reads"$id"_"$percentage"
+  processing_directory="$working_directory"/processing"$id"_"$percentage"
   mkdir "$fastq_directory" "$processing_directory"
   
   # Copy the raw_reads into the temporary read folder to be processed
