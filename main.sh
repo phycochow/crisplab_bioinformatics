@@ -25,6 +25,6 @@ for ((id=1; id<=total_arrays; id++)); do
     sbatch --array=1-96%96 "$path_to_parameter_sweep_script" "${percentages[@]}" "$id"
   else
     previous_array=$((id-1))
-    sbatch --array=1-96%96 --dependency=afterok:$previous_array "$path_to_parameter_sweep_script" "${percentages[@]}" "$id"
+    sbatch --array=1-96%96 --dependency=afterok:$previous_array, "$path_to_parameter_sweep_script" "${percentages[@]}" "$id"
   fi
 done
