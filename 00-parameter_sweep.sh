@@ -51,6 +51,6 @@ for percentage in "${percentages[@]}"; do
   # Go into the processing directory, submit a sbatch for the pipeline job to be completed, then obtain the data
   cd "$processing_directory"
   mkdir analysis logs
-  run_pipeline_job=$(sbatch --dependency=afterok:$subsampling_job "$path_to_pipeline_script" "$fastq_directory" "$processing_directory")
+  run_pipeline_job=$(sbatch --dependency=afterok:$subsampling_job "$path_to_pipeline_script" "$fastq_directory" "$processing_directory" "$percentage")
 done
  
