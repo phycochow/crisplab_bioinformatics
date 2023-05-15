@@ -1,7 +1,7 @@
 # Peter-Crisp's-lab-NGS-transgene-detection-project
 These scripts develop a reliable model to determine transgenic organisms by extracting features from NGS data for supervised learning.
 
-This is one of my undergrad projects under Dr Peter Crisp at the University of Queensland.
+This is an undergrad project with Dr Peter Crisp at the University of Queensland.
  
 To install, go to terminal and:
 ```bash
