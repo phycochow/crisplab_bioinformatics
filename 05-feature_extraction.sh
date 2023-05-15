@@ -1,10 +1,12 @@
 #!/bin/bash
 #SBATCH --job-name=feature_extraction
-#SBATCH --ntasks=1
-#SBATCH --mem-per-cpu=8G
-#SBATCH --time=2:00:00
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem-per-cpu=10G
+#SBATCH --time=5:00:00
 #SBATCH --partition=general
-#SBATCH --requeue
+#SBATCH --account=a_crisp
 
 usage="USAGE:
 bash 05-extract_bam_features.sh <fastq_directory> <processing_directory>"
@@ -98,7 +100,7 @@ source /home/s4669612/miniconda3/bin/activate py3.7
 # Define the vector list
 vector_list=("P2_P_Contig_1__zCas9" "Cloned_ykaf_nptII")
 
-# Feature extraction section
+# Loop over the sample names
 for sample_name in $(cat "$fastq_directory"/../samples.txt); do
 
   # Extract the row based on the sample name
@@ -108,7 +110,7 @@ for sample_name in $(cat "$fastq_directory"/../samples.txt); do
 
   # Check if row1 exists
     if [[ -n "$row1" ]]; then
-    # Extract the values from the row and store them in separate variables
+    # Extract the values from the row1 and store them in separate variables
       read_count=$(echo "$row1" | awk -F'\t' '{gsub(/[\(\)]/, "", $2); print $2}')
       percent_reads_adapter_r1=$(echo "$row1" | awk -F'\t' '{gsub(/[\(\)]/, "", $3); print $3}')
       percent_reads_adapter_r2=$(echo "$row1" | awk -F'\t' '{gsub(/[\(\)]/, "", $4); print $4}')
@@ -124,7 +126,7 @@ for sample_name in $(cat "$fastq_directory"/../samples.txt); do
 
     # Check if row2 exists
     if [[ -n "$row2" ]]; then
-      # Extract the values from the row and store them in separate variables
+      # Extract the values from the row2 and store them in separate variables
       raligned_1_time=$(echo "$row2" | awk -F'\t' '{gsub(/[\(\)]/, "", $2); print $2}')
       multi_mappings=$(echo "$row2" | awk -F'\t' '{gsub(/[\(\)]/, "", $3); print $3}')
       unmapped=$(echo "$row2" | awk -F'\t' '{gsub(/[\(\)]/, "", $4); print $4}')
@@ -133,12 +135,13 @@ for sample_name in $(cat "$fastq_directory"/../samples.txt); do
       multi_mappings=0
       unmapped=0
     fi
-
-    if [[ -n "$row" ]]; then
-      # Extract the values from the row and store them in separate variables
-      TOTAL_ALIGNMENTS=$(echo "$row" | awk -F'\t' '{print $2}')
-      MAPQ10=$(echo "$row" | awk -F'\t' '{print $3}')
-      PERCENT=$(echo "$row" | awk -F'\t' '{print $4}')
+    
+    # Check if row3 exists
+    if [[ -n "$row3" ]]; then
+      # Extract the values from the row3 and store them in separate variables
+      TOTAL_ALIGNMENTS=$(echo "$row3" | awk -F'\t' '{print $2}')
+      MAPQ10=$(echo "$row3" | awk -F'\t' '{print $3}')
+      PERCENT=$(echo "$row3" | awk -F'\t' '{print $4}')
      else
       TOTAL_ALIGNMENTS=0
       MAPQ10=0
@@ -148,14 +151,14 @@ for sample_name in $(cat "$fastq_directory"/../samples.txt); do
   # Loop over each vector in the vector list
   for vector_id in "${vector_list[@]}"; do
     # Run the feature extraction script
-    python "$path_to_update_script" "$vector_id" "$file" "$path_to_output_csv" "$read_count" "$percent_reads_adapter_r1" "$percent_reads_adapter_r2" "$percent_bp_trimmed_r1" "$percent_bp_trimmed_r2" "$raligned_1_time" "$multi_mappings" "$unmapped" "$TOTAL_ALIGNMENTS" "$MAPQ10" "$PERCENT" 
+    python "$path_to_update_script" "$vector_id" "$sample_name" "$path_to_output_csv" "$read_count" "$percent_reads_adapter_r1" "$percent_reads_adapter_r2" "$percent_bp_trimmed_r1" "$percent_bp_trimmed_r2" "$raligned_1_time" "$multi_mappings" "$unmapped" "$TOTAL_ALIGNMENTS" "$MAPQ10" "$PERCENT" 
   done
 done
 
 # Deactivate conda environment
 conda deactivate
 
-# remove files starting in the processsing directory - end of the script
+# remove the processsing and reads directory - end of the script
 cd "$processing_directory"/..
 rm -r "$processing_directory" "$fastq_directory"
 
