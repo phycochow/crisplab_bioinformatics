@@ -25,6 +25,8 @@ def count_mapped_reads():
     parser.add_argument("total_alignments", type=float, help="Total number of alignments")
     parser.add_argument("mapq10", type=float, help="Percent reads with mapping quality >= 10")
     parser.add_argument("mapq10_percent", type=float, help="Percent of mapped reads")
+    parser.add_argument("percentage", type=float, help="Percent of mapped reads")
+    
 
 #    
     args = parser.parse_args()
@@ -52,6 +54,7 @@ def count_mapped_reads():
 
     # add row 
     new_row = [args.sample_name, 
+               args.percentage,
                args.chromosome, 
                start_index, 
                end_index, 
