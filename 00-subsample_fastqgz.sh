@@ -40,3 +40,5 @@ gz_file2=${gz_files2[$SLURM_ARRAY_TASK_ID-1]}
 
 # Delete the compressed file
 rm "$gz_file2"
+
+
