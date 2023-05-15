@@ -22,8 +22,8 @@ fi
 processing_directory=$1
 
 # Set file paths
-path_to_update_script=/home/s4669612/gitrepos/crisplab_wgs/update_csv.py
-path_to_output_csv=/scratch/project/crisp008/chris/NGS_project/outputs/output.csv
+path_to_update_script=/home/s4669612/gitrepos/crisplab_wgs/04-feature_extraction.py
+path_to_output_csv="$processing_directory"/../ouputs/output.csv
 
 #################################### Extra 1 - delete trimmed fastq to save space ####################################
 cd "$processing_directory"
