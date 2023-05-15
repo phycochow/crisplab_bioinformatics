@@ -25,6 +25,10 @@ processing_directory=$1
 path_to_update_script=/home/s4669612/gitrepos/crisplab_wgs/update_csv.py
 path_to_output_csv=/scratch/project/crisp008/chris/NGS_project/outputs/output.csv
 
+#################################### Extra 1 - delete trimmed fastq to save space ####################################
+cd "$processing_directory"
+rm -r analysis/trimmed/
+
 #################################### Log Scraping Section 1 ####################################
 cd "$processing_directory"/logs
 
@@ -161,7 +165,7 @@ done
 # Deactivate conda environment
 conda deactivate
 
-#################################### Extra - delete processed files to save space ####################################
+#################################### Extra 2 - delete processed files to save space ####################################
 # remove the processsing and reads directory - end of the script
 cd "$processing_directory"/..
 rm -r "$processing_directory"
