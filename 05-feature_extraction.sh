@@ -94,14 +94,18 @@ done >> MAPQ_filter_summary.tsv
 path_to_bowtie2_MAPQ_tsv=$(pwd)/MAPQ_filter_summary.tsv
 
 #################################### Feature Extraction Section ####################################
+# Return the processing directory
+cd "$processing_directory"
+
 # Activate conda environment
 source /home/s4669612/miniconda3/bin/activate py3.7
 
 # Define the vector list
 vector_list=("P2_P_Contig_1__zCas9" "Cloned_ykaf_nptII")
 
-# Loop over the sample names
-for sample_name in $(cat "$fastq_directory"/../samples.txt); do
+# Loop over each BAM file in the trimmed_align_bowtie2 directory
+for path_to_file in analysis/trimmed_align_bowtie2/*.bam; do
+  sample_name=$(basename "$path_to_file" .bam | sed 's/_sorted$//')
 
   # Extract the row based on the sample name
   row1=$(grep -P "^${sample_name}\t" "$path_to_trim_tsv")
@@ -151,7 +155,7 @@ for sample_name in $(cat "$fastq_directory"/../samples.txt); do
   # Loop over each vector in the vector list
   for vector_id in "${vector_list[@]}"; do
     # Run the feature extraction script
-    python "$path_to_update_script" "$vector_id" "$sample_name" "$path_to_output_csv" "$read_count" "$percent_reads_adapter_r1" "$percent_reads_adapter_r2" "$percent_bp_trimmed_r1" "$percent_bp_trimmed_r2" "$raligned_1_time" "$multi_mappings" "$unmapped" "$TOTAL_ALIGNMENTS" "$MAPQ10" "$PERCENT" 
+    python "$path_to_update_script" "$vector_id" "$path_to_file" "$sample_name" "$path_to_output_csv" "$read_count" "$percent_reads_adapter_r1" "$percent_reads_adapter_r2" "$percent_bp_trimmed_r1" "$percent_bp_trimmed_r2" "$raligned_1_time" "$multi_mappings" "$unmapped" "$TOTAL_ALIGNMENTS" "$MAPQ10" "$PERCENT" 
   done
 done
 
