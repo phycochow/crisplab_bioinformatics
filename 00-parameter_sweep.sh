@@ -27,7 +27,7 @@ percentages=("${@:1:$#-1}")
 id="${@: -1}"
 
 # Store current working directory
-current_dir=$(pwd)
+working_directory=$(pwd)
 
 # Set up file paths
 path_to_pipeline_script=/home/s4669612/gitrepos/crisplab_wgs/00-pipeline.sh
@@ -36,13 +36,16 @@ path_to_pipeline_script=/home/s4669612/gitrepos/crisplab_wgs/00-pipeline.sh
 # Loop over each percentage and process the files
 for percentage in "${percentages[@]}"; do
 
+  # Go/return to parent directory of inputs outputs and processing  
+  cd "$working_directory"
+  
   # Store and create read and processing directories with id and percentage
   fastq_directory="inputs/reads$id"_"$percentage"
   processing_directory="processing$id"_"$percentage"
   mkdir "$fastq_directory" "$processing_directory"
   
   # Copy the raw_reads into the temporary read folder to be processed
-  for file in ../raw_reads_template/; do
+  for file in ../raw_reads_template/*; do
     cp "$file" "$fastq_directory"
   done
   
@@ -58,6 +61,7 @@ for percentage in "${percentages[@]}"; do
   
   # Go into the processing directory, submit a sbatch for the pipeline job to be completed, then obtain the data
   cd "$processing_directory"
+  mkdir analysis logs
   run_pipeline_job=$(sbatch "$path_to_pipeline_script" "$fastq_directory" "$processing_directory")
 done
  
