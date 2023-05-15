@@ -161,6 +161,7 @@ done
 # Deactivate conda environment
 conda deactivate
 
+#################################### Extra - delete processed files to save space ####################################
 # remove the processsing and reads directory - end of the script
 cd "$processing_directory"/..
 rm -r "$processing_directory"
