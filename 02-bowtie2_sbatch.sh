@@ -8,7 +8,16 @@ bash 02-bowtie1_sbatch.sh <sample_list.txt> <reads_folder> <bt2_threads> <bt2_ge
 #define stepo in the pipeline - should be the same name as the script
 step=02-bowtie2
 
-######### Setup ################
+#################################### Setup ########################################
+if [ "$#" -lt "8" ]; then
+  echo $usage
+  exit -1
+else
+  echo "initiating bowtie jobs on $reads_folder folder, bowtie can use $bt2_threads threads"
+  cat $sample_list
+  echo genome reference is $bt2_genome
+fi
+
 sample_list=$1
 reads_folder=$2
 bt2_threads=$3
@@ -17,38 +26,29 @@ q10filter=$5
 walltime=$6
 mem=$7
 account_department=$8
+fastq_directory=$9
 
-if [ "$#" -lt "8" ]
-then
-echo $usage
-exit -1
-else
-echo "initiating bowtie jobs on $reads_folder folder, bowtie can use $bt2_threads threads"
-cat $sample_list
-echo genome reference is $bt2_genome
-fi
-
-#number of samples
-# sbatch -J only takes a range to hack for 1 samples create a second sample in the input list called "NULL" - should work?
+# sbatch -J only takes a range to hack - for 1 sample, create a second sample in the input list called "NULL"
 number_of_samples=`wc -l $sample_list | awk '{print $1}'`
-if [[ "$number_of_samples" -eq 1 ]]
-then
-sbatch_t=1
+if [[ "$number_of_samples" -eq 1 ]]; then
+  sbatch_t=1
 else
-sbatch_t="1-${number_of_samples}"
+  sbatch_t="1-${number_of_samples}"
 fi
+
 echo "argument to be passed to sbatch -J is '$sbatch_t'"
 
+#################################### Extra - delete untrimmed fastq files to save space ####################################
+rm -r "$fastq_directory"
 
-########## Run #################
 
-#make log and analysis folders
-#make logs folder if it doesnt exist yet
+#################################### Run ####################################
+
+#make logs directory if it doesnt exist yet - it should
 mkdir -p logs
 
+#make timestamped trimmgalore logs folder 
 timestamp=$(date +%Y%m%d-%H%M%S)
-
-#make trimmgalore logs folder, timestamped
 log_folder=logs/${timestamp}_${step}
 mkdir $log_folder
 
@@ -72,3 +72,5 @@ sbatch --array $sbatch_t \
 --export LIST=${sample_list},reads_folder=$reads_folder,bt2_threads=$bt2_threads,bt2_genome=$bt2_genome,q10filter=$q10filter \
 --account $account_department \
 $script_to_sbatch
+
+
