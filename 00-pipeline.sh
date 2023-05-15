@@ -49,7 +49,7 @@ fi
 cd processing_directory
 trim_galore_job=$(sbatch --parsable --partition=general --dependency=afterok:$fastqc_job "$path_to_trim_script" "$path_to_sample_list" 20:00:00 16 a_crisp)
 
-# Submit the third job and set its dependency on the second job
+# Submit the third job and set its dependency on the second job, modified bowtie_sbatch to delete the subsampled reads to increase space
 cd processing_directory
 bowtie2_job=$(sbatch --parsable --partition=general --dependency=afterok:$trim_galore_job "$path_to_bowtie_script" "$path_to_sample_list" trimmed 6 "$path_to_reference" 10 18:00:00 40 a_crisp)
 
