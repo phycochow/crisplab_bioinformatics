@@ -49,7 +49,7 @@ fi
 #################################### Trim, Bowtie2, and Feature Extraction (with summaries)  ####################################
 # Submit the second job and set its dependency on the first job
 cd "$processing_directory"
-trim_galore_job=$(sbatch --parsable --partition=general --dependency=afterok:$fastqc_job "$path_to_trim_script" "$path_to_sample_list" 20:00:00 16 a_crisp)
+trim_galore_job=$(sbatch --parsable --partition=general --dependency=afterok:$fastqc_job "$path_to_trim_script" "$path_to_sample_list" 20:00:00 16 a_crisp "$fastq_directory")
 
 # Submit the third job and set its dependency on the second job, modified bowtie_sbatch to delete the subsampled reads to increase space
 cd "$processing_directory"
