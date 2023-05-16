@@ -167,8 +167,8 @@ conda deactivate
 
 #################################### Extra 2 - delete processed files to save space ####################################
 # remove the processsing and reads directory - end of the script
-cd "$processing_directory"/..
-rm -r "$processing_directory"
+# cd "$processing_directory"/..
+# rm -r "$processing_directory"
 for file in slurm*; do 
   rm "$file"
 done
