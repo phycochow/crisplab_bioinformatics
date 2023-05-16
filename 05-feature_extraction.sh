@@ -20,6 +20,7 @@ fi
 
 # Get the fastq directory from the command-line argument
 processing_directory=$1
+percentage=$2
 
 # Set file paths
 path_to_update_script=/home/s4669612/gitrepos/crisplab_wgs/04-feature_extraction.py
@@ -158,7 +159,7 @@ for path_to_file in analysis/trimmed_align_bowtie2/*.bam; do
   # Loop over each vector in the vector list
   for vector_id in "${vector_list[@]}"; do
     # Run the feature extraction script
-    python "$path_to_update_script" "$vector_id" "$path_to_file" "$sample_name" "$path_to_output_csv" "$read_count" "$percent_reads_adapter_r1" "$percent_reads_adapter_r2" "$percent_bp_trimmed_r1" "$percent_bp_trimmed_r2" "$raligned_1_time" "$multi_mappings" "$unmapped" "$TOTAL_ALIGNMENTS" "$MAPQ10" "$PERCENT" 
+    python "$path_to_update_script" "$vector_id" "$path_to_file" "$sample_name" "$path_to_output_csv" "$read_count" "$percent_reads_adapter_r1" "$percent_reads_adapter_r2" "$percent_bp_trimmed_r1" "$percent_bp_trimmed_r2" "$raligned_1_time" "$multi_mappings" "$unmapped" "$TOTAL_ALIGNMENTS" "$MAPQ10" "$PERCENT" "$percentage" 
   done
 done
 
