@@ -39,12 +39,12 @@ wait
 # Step 2 - Subsample and uncompress the fastq.gz files
 gz_files2=("$fastq_directory"/*)
 gz_file2=${gz_files2[$SLURM_ARRAY_TASK_ID-1]}
-"$path_to_seqtk" sample -s100 "$gz_file2" "$percentage" > "${gz_file2%.fastq.gz}.fastq"
+"$path_to_seqtk" sample -s100 "$gz_file2" "$percentage" > "${gz_file2%.gz}"
 
 # Wait until the files are completely copied
 wait
 
 # Step 3 - Delete the compressed file
-rm "$gz_file2"
+# rm "$gz_file2"
 
 
