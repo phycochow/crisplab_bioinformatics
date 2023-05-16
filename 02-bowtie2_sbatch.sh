@@ -76,22 +76,22 @@ $script_to_sbatch
 
 #################################### Keep Running til Completion for Job Dependency ####################################
 
-# Wait for the sub-sbatch jobs to complete
-sbatch_exit_status=$(echo $job_id | awk '{print $NF}')
-if [ "$sbatch_exit_status" != "0" ]; then
-  echo "Error submitting the sub-sbatch jobs. Exiting."
-  exit 1
-fi
+# # Wait for the sub-sbatch jobs to complete
+# sbatch_exit_status=$(echo $job_id | awk '{print $NF}')
+# if [ "$sbatch_exit_status" != "0" ]; then
+#   echo "Error submitting the sub-sbatch jobs. Exiting."
+#   exit 1
+# fi
 
-sbatch_job_id=$(echo $job_id | awk '{print $NF}')
-echo "Submitted sub-sbatch job with ID: $sbatch_job_id"
+# sbatch_job_id=$(echo $job_id | awk '{print $NF}')
+# echo "Submitted sub-sbatch job with ID: $sbatch_job_id"
 
-# Check the status of the sub-sbatch job and wait until it completes
-while true; do
-  job_status=$(squeue -j $sbatch_job_id -h -t PD,R,CG,CA,CF | wc -l)
-  if [ "$job_status" -eq 0 ]; then
-    echo "Sub-sbatch job ($sbatch_job_id) completed successfully."
-  break
-  fi
-  sleep 10
-done
+# # Check the status of the sub-sbatch job and wait until it completes
+# while true; do
+#   job_status=$(squeue -j $sbatch_job_id -h -t PD,R,CG,CA,CF | wc -l)
+#   if [ "$job_status" -eq 0 ]; then
+#     echo "Sub-sbatch job ($sbatch_job_id) completed successfully."
+#   break
+#   fi
+#   sleep 10
+# done
