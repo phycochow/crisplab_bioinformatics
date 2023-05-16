@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=subsample_fastqgz
-#SBATCH --array=1-200
+#SBATCH --array=1-58
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
@@ -32,7 +32,7 @@ path_to_raw_reads="$path_to_working_directory"/../raw_reads_template
 # Step 1 - Copy the fastq.gz files from raw_reads_template to the fastq directory
 file_paths=("$path_to_raw_reads"/*)
 file_path=${file_paths[$SLURM_ARRAY_TASK_ID-1]}
-filename=$(basename "$files_path")
+filename=$(basename "$file_path")
 
 new_gz_file="$fastq_directory"/"$filename"
 cp "$gz_file1" "$new_gz_file"
