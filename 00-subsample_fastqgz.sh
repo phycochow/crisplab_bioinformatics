@@ -35,14 +35,14 @@ file_path=${file_paths[$SLURM_ARRAY_TASK_ID-1]}
 
 echo "$file_path"
 
-# filename=$(basename "$file_path")
+filename=$(basename "$file_path")
 # new_gz_file="$fastq_directory"/"$filename"
 # cp "$gz_file1" "$new_gz_file"
 # echo "$new_gz_file"
 
 echo dumb
 
-echo "$fastq_directory""${file_path%.gz}"
+echo "$fastq_directory""${filename%.gz}"
 
 # Wait until the files are completely copied
 wait
