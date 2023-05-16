@@ -38,10 +38,10 @@ fi
 
 echo "argument to be passed to sbatch -J is '$sbatch_t'"
 
-#################################### Extra - delete untrimmed fastq files to save space ####################################
-for file in "$fastq_directory"/*; do
-  rm "$file"
-done
+# #################################### Extra - delete untrimmed fastq files to save space ####################################
+# for file in "$fastq_directory"/*; do
+#   rm "$file"
+# done
 
 #################################### Run ####################################
 
