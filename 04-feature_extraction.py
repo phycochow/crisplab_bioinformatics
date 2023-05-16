@@ -74,14 +74,12 @@ def count_mapped_reads():
                ]
     df.loc[len(df)] = new_row
 
-    # write the output to an Excel file
+    # write the output to an csv file
     df.to_csv(args.output_file, index=False)
 
 
 if __name__ == "__main__":
     """This runs the python file as a script and prevents the terminal from treating it as a module."""
     count_mapped_reads()  # Updates a preexisting csv file
-    """terminal input example: my_script.py chr1 my_bam_file.bam output.csv"""
-    """my_script.py Cloned_ykaf_nptII my_bam_file.bam output.csv"""
-    """Specifically Cloned_ykaf_nptII and P2_P_Contig_1__zCas9"""
+
     
