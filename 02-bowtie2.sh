@@ -7,17 +7,10 @@
 set -xeuo pipefail
 
 echo ------------------------------------------------------
-echo SBATCH: working directory is $SLURM_SUBMIT_DIR
+echo SBATCH: working directory is $(pwd)
 echo SBATCH: job identifier is $SLURM_JOBID
 echo SBATCH: array_ID is ${SLURM_ARRAY_TASK_ID}
 echo ------------------------------------------------------
-
-echo working dir is $PWD
-
-#cd into work dir
-echo changing to SLURM_SUBMIT_DIR
-cd "$SLURM_SUBMIT_DIR"
-echo working dir is now $PWD
 
 ########## Modules #################
 
