@@ -48,7 +48,7 @@ echo "$fastq_directory""${filename%.gz}"
 wait
 
 # Step 2 - Subsample and uncompress the fastq.gz files, store as .fastq - sidenote this took me 26+2 HOURS to make a non-bugged version!!!
-"$path_to_seqtk" sample -s100 "$file_path" "$percentage" > "$fastq_directory""${file_path%.gz}"
+"$path_to_seqtk" sample -s100 "$file_path" "$percentage" > "$fastq_directory""${filename%.gz}"
 
 # Wait until the files are completely copied
 wait
