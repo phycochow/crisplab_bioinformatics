@@ -55,16 +55,18 @@ trim_galore_job=$(sbatch --parsable --partition=general --dependency=afterok:$fa
 cd "$processing_directory"
 bowtie2_job=$(sbatch --parsable --partition=general --dependency=afterok:$trim_galore_job "$path_to_bowtie_script" "$path_to_sample_list" trimmed 6 "$path_to_reference" 10 18:00:00 40 a_crisp "$fastq_directory")
 
-# Wait for the third job to complete - to fix a bug
-echo "Waiting for Bowtie2 job ($bowtie2_job) to complete..."
-scontrol hold $bowtie2_job
+# Get the job ID prefix (e.g., "bowtie2_job")
+job_id_prefix=$(echo $bowtie2_job | cut -d'_' -f1)
+
+# Wait for all jobs with the specified job ID prefix to complete
+while [[ $(squeue -h -o "%i" -n "$job_id_prefix" | wc -l) -gt 0 ]]; do
+  sleep 20  # Wait for 20 seconds before checking again
+done
 
 # Submit the forth job and set its dependency on the third job
 cd "$processing_directory"
 extract_bam_features_job=$(sbatch --parsable --partition=general --dependency=afterok:$bowtie2_job "$path_to_feature_extraction_script" "$processing_directory" "$percentage")
 
-# Release the hold on the third job
-scontrol release $bowtie2_job
 
 
 
