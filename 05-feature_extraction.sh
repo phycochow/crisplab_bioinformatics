@@ -169,4 +169,6 @@ conda deactivate
 # remove the processsing and reads directory - end of the script
 cd "$processing_directory"/..
 rm -r "$processing_directory"
-
+for file in slurm*; do 
+  rm "$file"
+done
