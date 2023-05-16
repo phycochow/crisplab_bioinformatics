@@ -32,12 +32,16 @@ path_to_raw_reads=../raw_reads_template
 gz_files1=("$path_to_raw_reads"/*)
 gz_file1=${gz_files1[$SLURM_ARRAY_TASK_ID-1]}
 cp "$gz_file1" "$fastq_directory"
+echo "$gz_file1"
 
 # Wait until the files are completely copied
 wait
 
 # Step 2 - Subsample and uncompress the fastq.gz files
 gz_files2=("$fastq_directory"/*)
+
+echo "$gz_files2"
+
 gz_file2=${gz_files2[$SLURM_ARRAY_TASK_ID-1]}
 "$path_to_seqtk" sample -s100 "$gz_file2" "$percentage" > "${gz_file2%.gz}"
 
