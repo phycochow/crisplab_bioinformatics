@@ -6,13 +6,6 @@
 ########## QC #################
 set -xeuo pipefail
 
-echo ------------------------------------------------------
-echo SBATCH: working directory is $(pwd)
-echo SBATCH: job identifier is $SLURM_JOBID
-echo SBATCH: array_ID is ${SLURM_ARRAY_TASK_ID}
-echo ------------------------------------------------------
-
-
 ########## Modules #################
 
 module load fastqc/0.11.9-java-11
@@ -31,8 +24,17 @@ mkdir -p $trimmedfolder
 fastqcfolder=analysis/fastqc
 mkdir -p $fastqcfolder
 
-# update the command below to include the correct path for the input files
-trim_galore --phred33 --fastqc --fastqc_args "--noextract --outdir $fastqcfolder" -o $trimmedfolder --paired "${FASTQ_DIR}/${ID}_R1.fastq" "${FASTQ_DIR}/${ID}_R2.fastq"
+# Find the matching input files using the find command
+R1_file=$(find ${FASTQ_DIR} -name "${ID}_R1*.fastq" -type f)
+R2_file=$(find ${FASTQ_DIR} -name "${ID}_R2*.fastq" -type f)
 
-echo Done trimming
-
+if [[ -n "$R1_files" && -n "$R2_files" ]]; then
+  # Run trim_galore with the found input files
+  trim_galore --phred33 --fastqc --fastqc_args "--noextract --outdir $fastqcfolder" -o $trimmedfolder --paired $R1_files $R2_files
+  echo Done trimming
+else
+  echo "Input files not found for ID: $ID"
+  echo "R1_file: $R1_file"
+  echo "R2_file: $R2_file"
+  echo SBATCH: working directory is $(pwd)
+fi
