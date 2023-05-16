@@ -32,12 +32,17 @@ path_to_raw_reads="$path_to_working_directory"/../raw_reads_template
 # Step 1 - Copy the fastq.gz files from raw_reads_template to the fastq directory
 file_paths=("$path_to_raw_reads"/*)
 file_path=${file_paths[$SLURM_ARRAY_TASK_ID-1]}
-# filename=$(basename "$file_path")
 
+echo "$file_path"
+
+# filename=$(basename "$file_path")
 # new_gz_file="$fastq_directory"/"$filename"
 # cp "$gz_file1" "$new_gz_file"
 # echo "$new_gz_file"
 
+echo dumb
+
+echo "$fastq_directory""${file_path%.gz}"
 
 # Wait until the files are completely copied
 wait
