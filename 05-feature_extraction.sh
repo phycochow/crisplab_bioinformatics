@@ -26,8 +26,8 @@ path_to_update_script=/home/s4669612/gitrepos/crisplab_wgs/04-feature_extraction
 path_to_output_csv="$processing_directory"/../ouputs/output.csv
 
 #################################### Extra 1 - delete trimmed fastq to save space ####################################
-cd "$processing_directory"
-rm -r analysis/trimmed/
+# cd "$processing_directory"
+# rm -r analysis/trimmed/
 
 #################################### Log Scraping Section 1 ####################################
 cd "$processing_directory"/logs
@@ -169,6 +169,6 @@ conda deactivate
 # remove the processsing and reads directory - end of the script
 # cd "$processing_directory"/..
 # rm -r "$processing_directory"
-for file in slurm*; do 
-  rm "$file"
-done
+# for file in slurm*; do 
+#   rm "$file"
+# done
