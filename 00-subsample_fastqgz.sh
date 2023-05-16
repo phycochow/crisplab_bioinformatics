@@ -25,15 +25,19 @@ percentage=$2
 
 # Set file paths
 path_to_seqtk=/home/s4669612/software/seqtk/seqtk
-path_to_raw_reads=../raw_reads_template
+path_to_working_directory=$(pwd)
+path_to_raw_reads="$path_to_working_directory"/../raw_reads_template
 
 #################################### Run ####################################
 # Step 1 - Copy the fastq.gz files from raw_reads_template to the fastq directory
 gz_files1=("$path_to_raw_reads"/*)
 gz_file1=${gz_files1[$SLURM_ARRAY_TASK_ID-1]}
-new_file="$fastq_directory"/"$gz_file1"
+filename=$(basename "$gz_file1")
+
+new_file="$fastq_directory"/"$filename"
 cp "$gz_file1" "$new_file"
 echo "$new_file"
+
 
 # Wait until the files are completely copied
 wait
