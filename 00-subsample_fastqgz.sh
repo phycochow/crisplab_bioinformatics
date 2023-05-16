@@ -28,17 +28,20 @@ path_to_seqtk=/home/s4669612/software/seqtk/seqtk
 path_to_raw_reads=../raw_reads_template
 
 #################################### Run ####################################
-# Copy the fastq.gz files from raw_reads_template to the fastq directory
+# Step 1 - Copy the fastq.gz files from raw_reads_template to the fastq directory
 gz_files1=("$path_to_raw_reads"/*)
 gz_file1=${gz_files1[$SLURM_ARRAY_TASK_ID-1]}
 cp "$gz_file1" "$fastq_directory"
 
-# Subsample and uncompress the fastq.gz files
+# Wait until the files are completely copied
+wait
+
+# Step 2 - Subsample and uncompress the fastq.gz files
 gz_files2=("$fastq_directory"/*)
 gz_file2=${gz_files2[$SLURM_ARRAY_TASK_ID-1]}
 "$path_to_seqtk" sample -s100 "$gz_file2" "$percentage" > "${gz_file2%.fastq.gz}.fastq"
 
-# Delete the compressed file
+# Step 3 - Delete the compressed file
 rm "$gz_file2"
 
 
