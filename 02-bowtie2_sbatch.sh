@@ -9,15 +9,6 @@ bash 02-bowtie1_sbatch.sh <sample_list.txt> <reads_folder> <bt2_threads> <bt2_ge
 step=02-bowtie2
 
 #################################### Setup ########################################
-if [ "$#" -lt "8" ]; then
-  echo $usage
-  exit -1
-else
-  echo "initiating bowtie jobs on $reads_folder folder, bowtie can use $bt2_threads threads"
-  cat $sample_list
-  echo genome reference is $bt2_genome
-fi
-
 sample_list=$1
 reads_folder=$2
 bt2_threads=$3
@@ -27,6 +18,15 @@ walltime=$6
 mem=$7
 account_department=$8
 fastq_directory=$9
+
+if [ "$#" -lt "8" ]; then
+  echo $usage
+  exit -1
+else
+  echo "initiating bowtie jobs on $reads_folder folder, bowtie can use $bt2_threads threads"
+  cat $sample_list
+  echo genome reference is $bt2_genome
+fi
 
 # sbatch -J only takes a range to hack - for 1 sample, create a second sample in the input list called "NULL"
 number_of_samples=`wc -l $sample_list | awk '{print $1}'`
