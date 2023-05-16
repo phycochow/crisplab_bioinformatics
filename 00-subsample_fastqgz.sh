@@ -43,7 +43,7 @@ file_path=${file_paths[$SLURM_ARRAY_TASK_ID-1]}
 wait
 
 # Step 2 - Subsample and uncompress the fastq.gz files, store as .fastq - sidenote this took me 26+2 HOURS to make a non-bugged version!!!
-"$path_to_seqtk" sample -s100 "$file_path" "$percentage" > "$fastq_directory"/"${new_gz_file%.gz}"
+"$path_to_seqtk" sample -s100 "$file_path" "$percentage" > "$fastq_directory""${file_path%.gz}"
 
 # Wait until the files are completely copied
 wait
