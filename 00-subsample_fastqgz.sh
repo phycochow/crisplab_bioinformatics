@@ -32,7 +32,7 @@ path_to_raw_reads="$path_to_working_directory"/../raw_reads_template
 # Step 1 - Copy the fastq.gz files from raw_reads_template to the fastq directory
 file_paths=("$path_to_raw_reads"/*)
 file_path=${file_paths[$SLURM_ARRAY_TASK_ID-1]}
-filename=$(basename "$file_path")
+# filename=$(basename "$file_path")
 
 # new_gz_file="$fastq_directory"/"$filename"
 # cp "$gz_file1" "$new_gz_file"
@@ -43,7 +43,7 @@ filename=$(basename "$file_path")
 wait
 
 # Step 2 - Subsample and uncompress the fastq.gz files, store as .fastq - sidenote this took me 26+2 HOURS to make a non-bugged version!!!
-"$path_to_seqtk" sample -s100 "$filename" "$percentage" > "$fastq_directory"/"${new_gz_file%.gz}"
+"$path_to_seqtk" sample -s100 "$file_path" "$percentage" > "$fastq_directory"/"${new_gz_file%.gz}"
 
 # Wait until the files are completely copied
 wait
