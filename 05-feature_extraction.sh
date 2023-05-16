@@ -48,7 +48,7 @@ for i in $(ls 01-trim_galore_gz_e*); do
   PERCENT_READS_WITH_ADAPTERS=$(grep 'Reads with adapters:' $i | tr -s ' ' | cut -d " " -f 5 | paste -sd '\t')
   PERCENT_BP_TRIMMED=$(grep 'Quality-trimmed:' $i | tr -s ' ' | cut -d " " -f 4 | paste -sd '\t')
   echo -e "$SAMPLE\t$TOTAL_READS\t$PERCENT_READS_WITH_ADAPTERS\t$PERCENT_BP_TRIMMED"
-done >> ../total_reads_summary.tsv
+done >> total_reads_summary.tsv
 
 # Store trim tsv path
 path_to_trim_tsv=$(pwd)/total_reads_summary.tsv
