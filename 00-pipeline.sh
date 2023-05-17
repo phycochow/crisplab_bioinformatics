@@ -59,7 +59,14 @@ bowtie2_job=$(sbatch --parsable --partition=general --dependency=afterok:$trim_g
 cd "$processing_directory"
 extract_bam_features_job=$(sbatch --parsable --partition=general --dependency=afterok:$bowtie2_job "$path_to_feature_extraction_script" "$processing_directory" "$fastq_directory" "$percentage")
 
-
+# Wait until extract_bam_features_job is completed
+while true; do
+  job_status=$(squeue -j $extract_bam_features_job --format=%T)
+  if [ "$job_status" == "CD" ] || [ "$job_status" == "CF" ]; then
+    break
+  fi
+  sleep 60
+done
 
 
 
