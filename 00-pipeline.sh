@@ -33,12 +33,6 @@ path_to_trim_script=/home/s4669612/gitrepos/crisplab_wgs/01-trim_galore_gz_sbatc
 path_to_bowtie_script=/home/s4669612/gitrepos/crisplab_wgs/02-bowtie2_sbatch.sh
 path_to_feature_extraction_script=/home/s4669612/gitrepos/crisplab_wgs/05-feature_extraction.sh
 
-# Function to check job count
-check_job_count() {
-  job_count=$(squeue -h -o "%i" -u "s4669612" | awk -v prefix="$1" '$1 ~ prefix {count++} END {print count}')
-  echo "Job count: $job_count"
-}
-
 #################################### FastQC & MultiQC ####################################
 # Submit the first job and get the job ID
 cd "$processing_directory"
@@ -57,19 +51,9 @@ fi
 cd "$processing_directory"
 trim_galore_job=$(sbatch --parsable --partition=general --dependency=afterok:$fastqc_job "$path_to_trim_script" "$path_to_sample_list" 20:00:00 16 a_crisp "$fastq_directory")
 
-# Loop until job count reaches 0
-while [[ $(check_job_count "$trim_galore_job") -gt 0 ]]; do
-  sleep 25  # Adjust the sleep duration as needed
-done
-
 # Submit the third job and set its dependency on the second job, modified bowtie_sbatch to delete the subsampled reads to increase space
 cd "$processing_directory"
 bowtie2_job=$(sbatch --parsable --partition=general --dependency=afterok:$trim_galore_job "$path_to_bowtie_script" "$path_to_sample_list" trimmed 6 "$path_to_reference" 10 18:00:00 40 a_crisp "$fastq_directory")
-
-# Loop until job count reaches 0
-while [[ $(check_job_count "$bowtie2_job") -gt 0 ]]; do
-  sleep 25  # Adjust the sleep duration as needed
-done
 
 # Submit the forth job and set its dependency on the third job
 cd "$processing_directory"
