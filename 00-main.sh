@@ -36,7 +36,7 @@ check_batch_completion() {
 }
 
 #################################### Run ########################################
-# Specify the total number of jobs and the batch size
+# Specify the number of duplicates and the batch size
 total_jobs=2
 batch_size=1
 
