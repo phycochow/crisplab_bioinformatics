@@ -41,11 +41,19 @@ total_jobs=4
 batch_size=2
 
 
+
 for percentage in "${percentages[@]}"; do
 
     # Loop through the job array
     for ((i=1; i<=total_jobs; i+=batch_size)); do
         batch_jobs=()
+        
+        # Set the dependency for the next batch
+        if [ -n "$dependency" ]; then
+            dependency_option="--dependency=afterok:$dependency"
+        else
+            dependency_option=""
+        fi
         
         # Submit jobs for the current batch
         for ((j=i; j<i+batch_size; j++)); do
@@ -57,8 +65,8 @@ for percentage in "${percentages[@]}"; do
                 fastq_directory="$working_directory"/inputs/reads"$j"_"$percentage"
                 processing_directory="$working_directory"/processing"$j"_"$percentage"
                 mkdir "$fastq_directory" "$processing_directory"   
-                subsampling_job=$(sbatch --parsable "$path_to_subsampling_script" "$fastq_directory" "$percentage")
-                  
+                subsampling_job=$(sbatch --parsable $dependency_option "$path_to_subsampling_script" "$fastq_directory" "$percentage")
+                
                 mkdir "$processing_directory"/analysis "$processing_directory"/logs
                 # Stores job ID with --parsable
                 run_pipeline_job=$(sbatch --parsable --dependency=afterok:$subsampling_job "$path_to_pipeline_script" "$fastq_directory" "$processing_directory" "$percentage")
