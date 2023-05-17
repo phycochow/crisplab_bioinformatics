@@ -46,8 +46,7 @@ for percentage in "${percentages[@]}"; do
   mkdir "$fastq_directory" "$processing_directory"
   
   # Create subsampled fastq files
-  subsampling_job=$(sbatch "$path_to_subsampling_script" "$fastq_directory" "$percentage")
-  sleep 10s  # Wait for 10 seconds before submitting run_pipeline_job
+  subsampling_job=$(sbatch --parsable "$path_to_subsampling_script" "$fastq_directory" "$percentage")
 
   # Go into the processing directory, submit a sbatch for the pipeline job to be completed, then obtain the data
   cd "$processing_directory"
