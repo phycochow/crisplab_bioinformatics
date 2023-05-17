@@ -8,6 +8,8 @@
 #SBATCH --partition=general
 #SBATCH --account=a_crisp
 
+#set -xe
+set -xeuo pipefail
 #################################### Setup ########################################
 usage="USAGE:
 bash 00-main.sh <working_directory>"
