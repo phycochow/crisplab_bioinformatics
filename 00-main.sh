@@ -81,6 +81,7 @@ for percentage in "${percentages[@]}"; do
                 run_pipeline_job=$(sbatch --parsable --dependency=afterok:$subsampling_job "$path_to_pipeline_script" "$fastq_directory" "$processing_directory" "$percentage")
                 echo $run_pipeline_job
                 batch_jobs+=("$run_pipeline_job")  
+                echo $batch_jobs
             fi
         done
 
