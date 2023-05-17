@@ -73,15 +73,15 @@ for percentage in "${percentages[@]}"; do
 
                 echo "Submitting subsampling job for job $j"
                 subsampling_job=$(sbatch --parsable $dependency_option "$path_to_subsampling_script" "$fastq_directory" "$percentage")
-                echo $subsampling_job
+                echo subsampling_job: $subsampling_job
                 
                 mkdir "$processing_directory"/analysis "$processing_directory"/logs
                 # Stores job ID with --parsable
                 echo "Submitting pipeline job for job $j"
                 run_pipeline_job=$(sbatch --parsable --dependency=afterok:$subsampling_job "$path_to_pipeline_script" "$fastq_directory" "$processing_directory" "$percentage")
-                echo $run_pipeline_job
+                echo run_pipeline_job: $run_pipeline_job
                 batch_jobs+=("$run_pipeline_job")  
-                echo $batch_jobs
+                echo "batch_jobs: $batch_jobs"
             fi
         done
 
@@ -96,6 +96,6 @@ for percentage in "${percentages[@]}"; do
 
         # Set the dependency for the next batch
         dependency=$(IFS=:; echo "${batch_jobs[*]}")
-        echo reset dependency as $dependency
+        echo "reset dependency as $dependency"
     done
 done
