@@ -51,24 +51,38 @@ fi
 cd "$processing_directory"
 trim_galore_job=$(sbatch --parsable --partition=general --dependency=afterok:$fastqc_job "$path_to_trim_script" "$path_to_sample_list" 20:00:00 16 a_crisp "$fastq_directory")
 
-# Get the job ID prefix (e.g., "trim_galore_job")
-job_id_prefix=$(echo $trim_galore_job | cut -d'_' -f1)
+# Function to check job count
+check_job_count() {
+  job_count=$(squeue -h -o "%i" | awk -v prefix="$trim_galore_job" '$1 ~ prefix {count++} END {print count}')
+  echo "Job count: $job_count"
+}
 
-# Wait for all jobs with the specified job ID prefix to complete
-while [[ $(squeue -h -o "%i" -n "$job_id_prefix" | wc -l) -gt 0 ]]; do
-  sleep 20  # Wait for 20 seconds before checking again
+# Initial check
+check_job_count
+
+# Loop until job count reaches 0
+while [[ $job_count -gt 0 ]]; do
+  sleep 25  # Adjust the sleep duration as needed
+  check_job_count
 done
 
 # Submit the third job and set its dependency on the second job, modified bowtie_sbatch to delete the subsampled reads to increase space
 cd "$processing_directory"
 bowtie2_job=$(sbatch --parsable --partition=general --dependency=afterok:$trim_galore_job "$path_to_bowtie_script" "$path_to_sample_list" trimmed 6 "$path_to_reference" 10 18:00:00 40 a_crisp "$fastq_directory")
 
-# Get the job ID prefix (e.g., "bowtie2_job")
-job_id_prefix=$(echo $bowtie2_job | cut -d'_' -f1)
+# Function to check job count
+check_job_count() {
+  job_count=$(squeue -h -o "%i" | awk -v prefix="$bowtie2_job" '$1 ~ prefix {count++} END {print count}')
+  echo "Job count: $job_count"
+}
 
-# Wait for all jobs with the specified job ID prefix to complete
-while [[ $(squeue -h -o "%i" -n "$job_id_prefix" | wc -l) -gt 0 ]]; do
-  sleep 20  # Wait for 20 seconds before checking again
+# Initial check
+check_job_count
+
+# Loop until job count reaches 0
+while [[ $job_count -gt 0 ]]; do
+  sleep 25  # Adjust the sleep duration as needed
+  check_job_count
 done
 
 # Submit the forth job and set its dependency on the third job
