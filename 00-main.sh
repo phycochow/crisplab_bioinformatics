@@ -20,7 +20,7 @@ path_to_pipeline_script=/home/s4669612/gitrepos/crisplab_wgs/00-pipeline.sh
 path_to_subsampling_script=/home/s4669612/gitrepos/crisplab_wgs/00-subsample_fastqgz.sh
 
 # Construct the list of percentages - constant throughout the script
-percentages=($(seq 0.01 0.01 0.96))
+percentages=($(seq 0.01 0.01 0.03))
 
 # Function to check if all jobs in a batch have completed
 check_batch_completion() {
@@ -37,8 +37,8 @@ check_batch_completion() {
 
 #################################### Run ########################################
 # Specify the total number of jobs and the batch size
-total_jobs=400
-batch_size=
+total_jobs=2
+batch_size=1
 
 
 for percentage in "${percentages[@]}"; do
