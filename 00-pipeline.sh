@@ -35,7 +35,7 @@ path_to_feature_extraction_script=/home/s4669612/gitrepos/crisplab_wgs/05-featur
 
 # Function to check job count
 check_job_count() {
-  job_count=$(squeue -h -o "%i" -u "$USER" | awk -v prefix="$1" '$1 ~ prefix {count++} END {print count}')
+  job_count=$(squeue -h -o "%i" -u "s4669612" | awk -v prefix="$1" '$1 ~ prefix {count++} END {print count}')
   echo "Job count: $job_count"
 }
 
