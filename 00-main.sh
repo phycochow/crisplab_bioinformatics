@@ -86,3 +86,4 @@ for percentage in "${percentages[@]}"; do
         # Set the dependency for the next batch
         dependency=$(IFS=:; echo "${batch_jobs[*]}")
     done
+done
