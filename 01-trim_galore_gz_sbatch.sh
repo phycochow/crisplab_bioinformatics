@@ -1,4 +1,14 @@
 #!/bin/bash
+#SBATCH --job-name=trim_galore
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=1
+#SBATCH --mem-per-cpu=10G
+#SBATCH --time=20:00:00
+#SBATCH --partition=general
+#SBATCH --account=a_crisp
+
+
 #set -xe
 set -xeuo pipefail
 
@@ -60,7 +70,7 @@ cat $0 > ${log_folder}/sbatch_runner.log
 #-o and -e pass the file locations for std out/error
 #--export additional variables to pass to the sbatch script including the array list and the dir structures
 sbatch_output=$(sbatch --array $sbatch_t \
--t ${walltime} \
+-t 2:00:00 \
 -N 1 \
 -n 1 \
 --cpus-per-task 2 \
