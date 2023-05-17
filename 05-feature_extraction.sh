@@ -24,7 +24,7 @@ percentage=$2
 
 # Set file paths
 path_to_update_script=/home/s4669612/gitrepos/crisplab_wgs/04-feature_extraction.py
-path_to_output_csv="$processing_directory"/../ouputs/output.csv
+path_to_output_csv="$processing_directory"/../outputs/output.csv
 
 #################################### Extra 1 - delete trimmed fastq to save space ####################################
 # cd "$processing_directory"
