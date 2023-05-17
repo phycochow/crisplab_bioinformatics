@@ -9,7 +9,7 @@
 #SBATCH --account=a_crisp
 
 usage="USAGE:
-bash 05-feature_extraction.sh <processing_directory>"
+sbatch 05-feature_extraction.sh <processing_directory> <"$fastq_directory"> <percentage>"
 
 #################################### Setup ########################################
 if [ $# -eq 0 ]; then
@@ -20,7 +20,8 @@ fi
 
 # Get the fastq directory from the command-line argument
 processing_directory=$1
-percentage=$2
+fastq_directory=$2
+percentage=$3
 
 # Set file paths
 path_to_update_script=/home/s4669612/gitrepos/crisplab_wgs/04-feature_extraction.py
@@ -167,8 +168,8 @@ conda deactivate
 
 #################################### Extra 2 - delete processed files to save space ####################################
 # remove the processsing and reads directory (deleted at bowtie sbatch step) - end of the script
-# cd "$processing_directory"/..
-# rm -r "$processing_directory"
-# for file in slurm*; do 
-#   rm "$file"
-# done
+cd "$processing_directory"/..
+rm -r "$processing_directory" "$fastq_directory"
+for file in slurm*; do 
+  rm "$file"
+done
