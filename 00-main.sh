@@ -10,7 +10,7 @@
 
 #################################### Setup ########################################
 usage="USAGE:
-bash 00-main.sh <working_directory> <id>"
+bash 00-main.sh <working_directory>"
 
 working_directory=$1
 
