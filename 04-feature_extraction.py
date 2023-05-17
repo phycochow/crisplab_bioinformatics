@@ -40,10 +40,10 @@ def count_mapped_reads():
         if not read.is_unmapped:
             mapped_reads += 1
     
-    # Calculate read coverage by getting the reference sequence length for the specified chromosome
-    total_bases = bamfile.get_reference_length(args.chromosome)
+    # Calculate read coverage by getting the reference sequence length for the specified chromosome by id
+    total_bases = bamfile.get_reference_length(args.vector_id)
     covered_bases = 0
-    for pileupcolumn in bamfile.pileup(args.chromosome):
+    for pileupcolumn in bamfile.pileup(args.vector_id):
         if pileupcolumn.n > 0:
             covered_bases += 1
 
@@ -55,7 +55,7 @@ def count_mapped_reads():
     # add row 
     new_row = [args.sample_name, 
                args.percentage,
-               args.chromosome, 
+               args.vector_id, 
                start_index, 
                end_index, 
                mapped_reads, 
