@@ -27,8 +27,7 @@ path_to_update_script=/home/s4669612/gitrepos/crisplab_wgs/04-feature_extraction
 path_to_output_csv="$processing_directory"/../outputs/output.csv
 
 #################################### Extra 1 - delete trimmed fastq to save space ####################################
-# cd "$processing_directory"
-# rm -r analysis/trimmed/
+rm -r "$processing_directory"/analysis/trimmed/
 
 #################################### Log Scraping Section 1 ####################################
 cd "$processing_directory"/logs
