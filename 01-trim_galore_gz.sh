@@ -31,6 +31,7 @@ R2_file=$(find ${FASTQ_DIR} -name "${ID}_R2*.fastq" -type f)
 if [[ -n "$R1_file" && -n "$R2_file" ]]; then
   # Run trim_galore with the found input files
   trim_galore --phred33 --fastqc --fastqc_args "--noextract --outdir $fastqcfolder" -o $trimmedfolder --paired $R1_file $R2_file
+  rm "$R1_file" "$R2_file"
   echo Done trimming
 else
   echo "Input files not found for ID: $ID"
