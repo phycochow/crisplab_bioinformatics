@@ -59,7 +59,7 @@ cat $0 > ${log_folder}/sbatch_runner.log
 #submit sbatch and pass args
 #-o and -e pass the file locations for std out/error
 #--export additional variables to pass to the sbatch script including the array list and the dir structures
-sbatch --array $sbatch_t \
+sbatch_output=$(sbatch --array $sbatch_t \
 -t ${walltime} \
 -N 1 \
 -n 1 \
@@ -69,4 +69,12 @@ sbatch --array $sbatch_t \
 -e ${log_folder}/${step}_e_%A_%a \
 --export LIST=${sample_list},FASTQ_DIR=${fastq_dir} \
 --account $account_department \
-$script_to_sbatch
+$script_to_sbatch)
+
+# Extract the job ID from sbatch output
+job_id=$(echo $sbatch_output | awk '{print $4}')
+while [[ $(squeue -h -j $job_id -t PD,R) ]]; do
+    sleep 10
+done
+echo "All jobs completed."
+
