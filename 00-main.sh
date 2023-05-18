@@ -29,7 +29,6 @@ percentages=($(seq 0.01 0.01 0.03))
 check_batch_completion() {
     local completed=1  # Assume all jobs are completed
     for job_id in "${batch_jobs[@]}"; do
-
         job_status=$(squeue -h -j "$job_id" -t PENDING,RUNNING,TIMEOUT,FAILED,CANCELLED | wc -l)
         if [ "$job_status" -gt 1 ]; then  # Check if there are running or pending jobs
             completed=0  # If any job is not completed, set completed to 0
@@ -52,8 +51,8 @@ for percentage in "${percentages[@]}"; do
         echo "Processing batch: $i to $((i+batch_size-1))"
 
         batch_jobs=()
-        echo batch_jobs has been reset to $batch_jobs
-        
+        echo "batch_jobs has been reset to ${batch_jobs[@]}"
+
         # Submit jobs for the current batch
         for ((j=i; j<i+batch_size; j++)); do
             if [ $j -le $total_jobs ]; then
@@ -70,30 +69,28 @@ for percentage in "${percentages[@]}"; do
 
                 echo "Submitting subsampling job for job $j"
                 subsampling_job=$(sbatch --parsable "$path_to_subsampling_script" "$fastq_directory" "$percentage")
-                echo subsampling_job: $subsampling_job
+                echo "subsampling_job: $subsampling_job"
                 echo "Submitting pipeline job for job $j"
-                
+
                 ### Set the dependency on the completion of all matching jobs for run_pipeline_job ###
                 run_pipeline_job=$(sbatch --parsable --dependency=afterok:$subsampling_job "$path_to_pipeline_script" "$fastq_directory" "$processing_directory" "$percentage")
-                echo run_pipeline_job: $run_pipeline_job
+                echo "run_pipeline_job: $run_pipeline_job"
                 batch_jobs+=("$run_pipeline_job")  
-                echo "batch_jobs: $batch_jobs"
+                echo "batch_jobs: ${batch_jobs[@]}"
             fi
         done
-        
-        # Wait for the current batch to complete
 
-            while [[ "${batch_job_statuses[@]}" =~ "0" ]]; do
-                batch_job_statuses=()
-                for job_id in "${batch_jobs[@]}"; do
-                    if [[ $(squeue -h -j $job_id -t PD,R) ]]; then  # Check if jobs are completed
-                        batch_job_statuses+=(0)  # If any job is not completed, set completed to no
-                    else
-                        sleep 25
-                    fi
-                done
+        # Wait for the current batch to complete
+        while [[ "${batch_job_statuses[@]}" =~ "0" ]]; do
+            batch_job_statuses=()
+            for job_id in "${batch_jobs[@]}"; do
+                if [[ $(squeue -h -j $job_id -t PD,R) ]]; then  # Check if jobs are completed
+                    batch_job_statuses+=(0)  # If any job is not completed, set completed to no
+                else
+                    sleep 25
+                fi
             done
         done
-        # Proceeds to the next batch
     done
+    # Proceed to the next batch
 done
