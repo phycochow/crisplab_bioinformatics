@@ -78,6 +78,7 @@ while true; do
   if [ "$job_status" == "CD" ] || [ "$job_status" == "CF" ]; then
     break
   fi
+  echo sleeping 75 seconds
   sleep 75
 done
 
