@@ -74,7 +74,7 @@ extract_bam_features_job=$(sbatch --parsable --partition=general --dependency=af
 # Wait until extract_bam_features_job is completed
 while true; do
   job_status=$(squeue -j $extract_bam_features_job --format=%T)
-  echo job status
+  echo job status: $job_status
   if [ "$job_status" == "CD" ] || [ "$job_status" == "CF" ]; then
     break
   fi
