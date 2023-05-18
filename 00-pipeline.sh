@@ -72,14 +72,9 @@ cd "$processing_directory"
 extract_bam_features_job=$(sbatch --parsable --partition=general --dependency=afterok:$bowtie2_job "$path_to_feature_extraction_script" "$processing_directory" "$fastq_directory" "$percentage")
 
 # Wait until extract_bam_features_job is completed
-while true; do
-  job_status=$(squeue -j $extract_bam_features_job --format=%T)
-  echo job status: $job_status
-  if [ "$job_status" == "CD" ] || [ "$job_status" == "CF" ]; then
-    break
-  fi
-  echo sleeping 75 seconds
-  sleep 75
+while [[ $(squeue -h -j $extract_bam_features_job -t PD,R) ]]; do
+    echo sleeping 180
+    sleep 180
 done
 
 #################################### Extra 2 - delete processed files to save space ####################################
