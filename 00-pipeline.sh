@@ -9,7 +9,7 @@
 #SBATCH --account=a_crisp
 
 usage="USAGE:
-bash 00-pipeline.sh <fastq_directory> <processing_directory>"
+sbatch 00-pipeline.sh <fastq_directory> <processing_directory> <percentage>"
 
 #################################### Setup ########################################
 # Check if the number of arguments is correct
