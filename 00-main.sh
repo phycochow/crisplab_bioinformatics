@@ -78,8 +78,8 @@ for percentage in "${percentages[@]}"; do
                     echo running_batch_job is $running_batch_job
                 fi
             done
-            echo sleeping 25 seconds
-            sleep 25
+            echo sleeping 15 min
+            sleep 900
         done
 
     done
