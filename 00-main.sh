@@ -58,7 +58,7 @@ for percentage in "${percentages[@]}"; do
         else
             dependency_option=""
         fi
-        echo $dependency
+        echo dependency is: $dependency
         # Submit jobs for the current batch
         for ((j=i; j<i+batch_size; j++)); do
             if [ $j -le $total_jobs ]; then
