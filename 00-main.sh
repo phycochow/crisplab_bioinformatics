@@ -25,19 +25,6 @@ path_to_subsampling_script=/home/s4669612/gitrepos/crisplab_wgs/00-subsample_fas
 # Construct the list of percentages - constant throughout the script
 percentages=($(seq 0.01 0.01 0.03))
 
-# Function to check if all jobs in a batch have completed
-check_batch_completion() {
-    local completed=1  # Assume all jobs are completed
-    for job_id in "${batch_jobs[@]}"; do
-        job_status=$(squeue -h -j "$job_id" -t PENDING,RUNNING,TIMEOUT,FAILED,CANCELLED | wc -l)
-        if [ "$job_status" -gt 1 ]; then  # Check if there are running or pending jobs
-            completed=0  # If any job is not completed, set completed to 0
-            break
-        fi
-    done
-    echo $completed
-}
-
 #################################### Run ########################################
 # Specify the number of duplicates and the batch size
 total_jobs=4
