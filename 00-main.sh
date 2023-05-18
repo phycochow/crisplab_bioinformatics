@@ -32,7 +32,7 @@ check_batch_completion() {
 
         job_status=$(squeue -h -j "$job_id" -t "PENDING,RUNNING,TIMEOUT,FAILED,CANCELLED" | wc -l)
         if [ "$job_status" -ne 0 ]; then
-            completed=0  # If any job is not completed, set completed to 1
+            completed=0  # If any job is not completed, set completed to 0
             break
         fi
     done
