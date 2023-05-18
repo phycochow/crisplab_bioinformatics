@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=subsample_fastqgz
-#SBATCH --array=1-58
+#SBATCH --array=1-54
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
