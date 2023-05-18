@@ -15,6 +15,7 @@ usage="USAGE:
 bash 00-main.sh <working_directory>"
 
 working_directory=$1
+dependency=""
 
 # Path to the main script
 path_to_parameter_sweep_script=/home/s4669612/gitrepos/crisplab_wgs/00-parameter_sweep.sh
