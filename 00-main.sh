@@ -86,10 +86,12 @@ for percentage in "${percentages[@]}"; do
             for job_id in "${batch_jobs[@]}"; do
                 if [[ $(squeue -h -j $job_id -t PD,R) ]]; then  # Check if jobs are completed
                     batch_job_statuses+=(0)  # If any job is not completed, set completed to no
-                else
-                    sleep 25
                 fi
             done
+
+            if [[ "${batch_job_statuses[@]}" =~ "0" ]]; then
+                sleep 25
+            fi
         done
     done
     # Proceed to the next batch
