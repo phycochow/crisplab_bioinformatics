@@ -5,7 +5,7 @@
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
 #SBATCH --mem-per-cpu=15G
-#SBATCH --time=8:00:00
+#SBATCH --time=00:20:00
 #SBATCH --partition=general
 #SBATCH --account=a_crisp
 #SBATCH --requeue
