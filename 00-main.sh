@@ -80,7 +80,9 @@ for percentage in "${percentages[@]}"; do
                 
                 # That subsampling job id is not on squeue because it submits a job array so it'll be id 101_[1-10] instead of 101
                 matching_jobs=$(squeue -u "$username" -o "%i" | grep "^${subsampling_job}")
-
+                
+                matching_jobs_string="${matching_jobs//_[1-54]/_{1..54}}"
+                matching_jobs_string="${matching_jobs_string// /:}"
 
                 # Some dumb stuff, skip reading this
                 mkdir "$processing_directory"/analysis "$processing_directory"/logs
@@ -88,7 +90,7 @@ for percentage in "${percentages[@]}"; do
                 echo "Submitting pipeline job for job $j"
                 
                 ### Set the dependency on the completion of all matching jobs for run_pipeline_job ###
-                run_pipeline_job=$(sbatch --parsable --dependency=afterok:$matching_jobs "$path_to_pipeline_script" "$fastq_directory" "$processing_directory" "$percentage")
+                run_pipeline_job=$(sbatch --parsable --dependency=afterok:$matching_jobs_string "$path_to_pipeline_script" "$fastq_directory" "$processing_directory" "$percentage")
                 echo run_pipeline_job: $run_pipeline_job
                 batch_jobs+=("$run_pipeline_job")  
                 echo "batch_jobs: $batch_jobs"
