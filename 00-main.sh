@@ -53,7 +53,7 @@ for percentage in "${percentages[@]}"; do
         echo "Processing batch: $i to $((i+batch_size-1))"
 
         batch_jobs=()
-        jobs=()
+
         # Set the dependency for the next batch
         if [ -n "$dependency" ]; then
             dependency_option="--dependency=afterok:$dependency"
@@ -78,15 +78,9 @@ for percentage in "${percentages[@]}"; do
                 subsampling_job=$(sbatch --parsable $dependency_option "$path_to_subsampling_script" "$fastq_directory" "$percentage")
                 echo subsampling_job: $subsampling_job
                 
-                # That subsampling job id is not on squeue because it submits a job array so it'll be id 101_1 instead of 101
+                # That subsampling job id is not on squeue because it submits a job array so it'll be id 101_[1-10] instead of 101
                 matching_jobs=$(squeue -u "$username" -o "%i" | grep "^${subsampling_job}")
 
-                #### Create a dependency string for all matching jobs by joining the job IDs using colon as a separator ###
-                dependency_string=""
-                for job_id in $matching_jobs; do
-                    jobs+=("$job_id")
-                done
-                dependency_string=$(IFS=:; echo "${jobs[*]}")
 
                 # Some dumb stuff, skip reading this
                 mkdir "$processing_directory"/analysis "$processing_directory"/logs
@@ -94,7 +88,7 @@ for percentage in "${percentages[@]}"; do
                 echo "Submitting pipeline job for job $j"
                 
                 ### Set the dependency on the completion of all matching jobs for run_pipeline_job ###
-                run_pipeline_job=$(sbatch --parsable --dependency=afterok:$dependency_string "$path_to_pipeline_script" "$fastq_directory" "$processing_directory" "$percentage")
+                run_pipeline_job=$(sbatch --parsable --dependency=afterok:$matching_jobs "$path_to_pipeline_script" "$fastq_directory" "$processing_directory" "$percentage")
                 echo run_pipeline_job: $run_pipeline_job
                 batch_jobs+=("$run_pipeline_job")  
                 echo "batch_jobs: $batch_jobs"
