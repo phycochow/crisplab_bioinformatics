@@ -70,16 +70,17 @@ cat $0 > ${log_folder}/sbatch_runner.log
 #-o and -e pass the file locations for std out/error
 #--export additional variables to pass to the sbatch script including the array list and the dir structures
 sbatch_output=$(sbatch --array $sbatch_t \
--t 2:00:00 \
+-t $walltime \
 -N 1 \
 -n 1 \
 --cpus-per-task 2 \
---mem ${mem}gb \
+--mem-per-cpu ${mem}G \
 -o ${log_folder}/${step}_o_%A_%a \
 -e ${log_folder}/${step}_e_%A_%a \
 --export LIST=${sample_list},FASTQ_DIR=${fastq_dir} \
 --account $account_department \
 $script_to_sbatch)
+
 
 # Extract the job ID from sbatch output
 job_id=$(echo $sbatch_output | awk '{print $4}')
