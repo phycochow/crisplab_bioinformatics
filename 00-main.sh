@@ -27,11 +27,11 @@ percentages=($(seq 0.01 0.01 0.03))
 
 # Function to check if all jobs in a batch have completed
 check_batch_completion() {
-    local completed=1
+    local completed=0  # Assume all jobs are completed
     for job_id in "${batch_jobs[@]}"; do
-        squeue_output=$(squeue -h -j "$job_id" -t "COMPLETED" -o "%j")
-        if [ -n "$squeue_output" ]; then
-            completed=0
+        squeue_output=$(squeue -h -j "$job_id" -t "COMPLETED" | wc -l)
+        if [ "$squeue_output" -ne 1 ]; then
+            completed=1  # If any job is not completed, set completed to 1
             break
         fi
     done
