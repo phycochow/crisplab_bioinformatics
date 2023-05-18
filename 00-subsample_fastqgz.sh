@@ -1,7 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=subsample_fastqgz
 #SBATCH --array=1-54
-#SBATCH --requeue 
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
@@ -9,6 +8,7 @@
 #SBATCH --time=8:00:00
 #SBATCH --partition=general
 #SBATCH --account=a_crisp
+#SBATCH --requeue 
 
 usage="USAGE:
 sbatch 00-subsample_fastqgz.sh <fastq_directory> <percentage>"
