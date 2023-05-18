@@ -3,8 +3,8 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem-per-cpu=10G
-#SBATCH --time=20:00:00
+#SBATCH --mem-per-cpu=2G
+#SBATCH --time=06:00:00
 #SBATCH --partition=general
 #SBATCH --account=a_crisp
 
