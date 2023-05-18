@@ -16,6 +16,7 @@ bash 00-main.sh <working_directory>"
 
 working_directory=$1
 dependency=""
+username="s4669612"
 
 # Path to the main script
 path_to_parameter_sweep_script=/home/s4669612/gitrepos/crisplab_wgs/00-parameter_sweep.sh
@@ -31,7 +32,7 @@ check_batch_completion() {
     for job_id in "${batch_jobs[@]}"; do
 
         job_status=$(squeue -h -j "$job_id" -t "PENDING,RUNNING,TIMEOUT,FAILED,CANCELLED" | wc -l)
-        if [ "$job_status" -ne 0 ]; then
+        if [ "$job_status" -gt 1 ]; then  # Check if there are running or pending jobs
             completed=0  # If any job is not completed, set completed to 0
             break
         fi
@@ -52,7 +53,7 @@ for percentage in "${percentages[@]}"; do
         echo "Processing batch: $i to $((i+batch_size-1))"
 
         batch_jobs=()
-
+        jobs=()
         # Set the dependency for the next batch
         if [ -n "$dependency" ]; then
             dependency_option="--dependency=afterok:$dependency"
@@ -77,10 +78,23 @@ for percentage in "${percentages[@]}"; do
                 subsampling_job=$(sbatch --parsable $dependency_option "$path_to_subsampling_script" "$fastq_directory" "$percentage")
                 echo subsampling_job: $subsampling_job
                 
+                # That subsampling job id is not on squeue because it submits a job array so it'll be id 101_1 instead of 101
+                matching_jobs=$(squeue -u "$username" -o "%i" | grep "^${subsampling_job}")
+
+                #### Create a dependency string for all matching jobs by joining the job IDs using colon as a separator ###
+                dependency_string=""
+                for job_id in $matching_jobs; do
+                    jobs+=("$job_id")
+                done
+                dependency_string=$(IFS=:; echo "${jobs[*]}")
+
+                # Some dumb stuff, skip reading this
                 mkdir "$processing_directory"/analysis "$processing_directory"/logs
                 # Stores job ID with --parsable
                 echo "Submitting pipeline job for job $j"
-                run_pipeline_job=$(sbatch --parsable --dependency=afterok:$subsampling_job "$path_to_pipeline_script" "$fastq_directory" "$processing_directory" "$percentage")
+                
+                ### Set the dependency on the completion of all matching jobs for run_pipeline_job ###
+                run_pipeline_job=$(sbatch --parsable --dependency=afterok:$dependency_string "$path_to_pipeline_script" "$fastq_directory" "$processing_directory" "$percentage")
                 echo run_pipeline_job: $run_pipeline_job
                 batch_jobs+=("$run_pipeline_job")  
                 echo "batch_jobs: $batch_jobs"
