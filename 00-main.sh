@@ -30,7 +30,7 @@ check_batch_completion() {
     local completed=1  # Assume all jobs are completed
     for job_id in "${batch_jobs[@]}"; do
 
-        job_status=$(squeue -h -j "$job_id" -t "PENDING,RUNNING,TIMEOUT" | wc -l)
+        job_status=$(squeue -h -j "$job_id" -t "PENDING,RUNNING,TIMEOUT,FAILED,CANCELLED" | wc -l)
         if [ "$job_status" -ne 0 ]; then
             completed=0  # If any job is not completed, set completed to 1
             break
