@@ -3,8 +3,8 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
-#SBATCH --mem-per-cpu=10G
-#SBATCH --time=30:00:00
+#SBATCH --mem-per-cpu=2G
+#SBATCH --time=09:00:00
 #SBATCH --partition=general
 #SBATCH --account=a_crisp
 
@@ -73,11 +73,11 @@ cat $0 > ${log_folder}/sbatch_runner.log
 #-o and -e pass the file locations for std out/error
 #--export additional variables to pass to the sbatch script including the array list and the dir structures
 sbatch_output=$(sbatch --array $sbatch_t \
--t 03:00:00 \
+-t $walltime \
 -N 1 \
 -n 1 \
 --cpus-per-task ${bt2_threads} \
---mem ${mem}gb \
+--mem-per-cpu ${mem}gb \
 -o ${log_folder}/${step}_o_%A_%a \
 -e ${log_folder}/${step}_e_%A_%a \
 --export LIST=${sample_list},reads_folder=$reads_folder,bt2_threads=$bt2_threads,bt2_genome=$bt2_genome,q10filter=$q10filter \
