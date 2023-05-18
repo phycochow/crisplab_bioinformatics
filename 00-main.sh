@@ -8,8 +8,8 @@
 #SBATCH --partition=general
 #SBATCH --account=a_crisp
 
-#set -xe
-set -xeuo pipefail
+# #set -xe
+# set -xeuo pipefail
 #################################### Setup ########################################
 usage="USAGE:
 bash 00-main.sh <working_directory>"
@@ -53,14 +53,15 @@ for percentage in "${percentages[@]}"; do
         echo "Processing batch: $i to $((i+batch_size-1))"
 
         batch_jobs=()
-
+        echo batch_jobs has been reset to $batch_jobs
+        
         # Set the dependency for the next batch
         if [ -n "$dependency" ]; then
             dependency_option="--dependency=afterok:$dependency"
         else
             dependency_option=""
         fi
-        echo dependency is: $dependency
+        echo dependency has been reset to: $dependency
         # Submit jobs for the current batch
         for ((j=i; j<i+batch_size; j++)); do
             if [ $j -le $total_jobs ]; then
@@ -73,24 +74,15 @@ for percentage in "${percentages[@]}"; do
                 fastq_directory="$working_directory"/inputs/reads"$j"_"$percentage"
                 processing_directory="$working_directory"/processing"$j"_"$percentage"
                 mkdir "$fastq_directory" "$processing_directory"   
+                mkdir "$processing_directory"/analysis "$processing_directory"/logs
 
                 echo "Submitting subsampling job for job $j"
                 subsampling_job=$(sbatch --parsable $dependency_option "$path_to_subsampling_script" "$fastq_directory" "$percentage")
                 echo subsampling_job: $subsampling_job
-                
-                # That subsampling job id is not on squeue because it submits a job array so it'll be id 101_[1-10] instead of 101
-                matching_jobs=$(squeue -u "$username" -o "%i" | grep "^${subsampling_job}")
-                
-                matching_jobs_string="${matching_jobs//_[1-54]/_{1..54}}"
-                matching_jobs_string="${matching_jobs_string// /:}"
-
-                # Some dumb stuff, skip reading this
-                mkdir "$processing_directory"/analysis "$processing_directory"/logs
-                # Stores job ID with --parsable
                 echo "Submitting pipeline job for job $j"
                 
                 ### Set the dependency on the completion of all matching jobs for run_pipeline_job ###
-                run_pipeline_job=$(sbatch --parsable --dependency=afterok:$matching_jobs_string "$path_to_pipeline_script" "$fastq_directory" "$processing_directory" "$percentage")
+                run_pipeline_job=$(sbatch --parsable --dependency=afterok:$subsampling_job "$path_to_pipeline_script" "$fastq_directory" "$processing_directory" "$percentage")
                 echo run_pipeline_job: $run_pipeline_job
                 batch_jobs+=("$run_pipeline_job")  
                 echo "batch_jobs: $batch_jobs"
@@ -103,7 +95,7 @@ for percentage in "${percentages[@]}"; do
             if [ $? -eq 1 ]; then
                 break
             fi
-            sleep 10
+            sleep 20
         done
 
         # Set the dependency for the next batch
