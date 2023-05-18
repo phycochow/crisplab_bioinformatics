@@ -4,12 +4,14 @@
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
 #SBATCH --mem-per-cpu=10G
-#SBATCH --time=7:00:00
+#SBATCH --time=3:00:00
 #SBATCH --partition=general
 #SBATCH --account=a_crisp
 
 usage="USAGE:
-sbatch 05-feature_extraction.sh <processing_directory> <"$fastq_directory"> <percentage>"
+sbatch 05-feature_extraction.sh <processing_directory> <fastq_directory> <percentage>"
+
+echo "Running feature_extraction script."
 
 #################################### Setup ########################################
 if [ $# -eq 0 ]; then
@@ -17,6 +19,8 @@ if [ $# -eq 0 ]; then
   echo "$usage"
   exit 1
 fi
+
+echo "Arguments received: processing_directory=$1, fastq_directory=$2, percentage=$3"
 
 # Get the fastq directory from the command-line argument
 processing_directory=$1
@@ -28,9 +32,12 @@ path_to_update_script=/home/s4669612/gitrepos/crisplab_wgs/04-feature_extraction
 path_to_output_csv="$processing_directory"/../outputs/output.csv
 
 #################################### Extra 1 - delete trimmed fastq to save space ####################################
+echo "Deleting trimmed fastq files."
 rm -r "$processing_directory"/analysis/trimmed/
 
 #################################### Log Scraping Section 1 ####################################
+echo "Scraping log files - Section 1."
+
 cd "$processing_directory"/logs
 
 # Find and enter the directory that ends with "01-trim_galore_gz"
@@ -55,6 +62,8 @@ done >> total_reads_summary.tsv
 path_to_trim_tsv=$(pwd)/total_reads_summary.tsv
 
 #################################### Log Scraping Section 2 ####################################
+echo "Scraping log files - Section 2."
+
 cd "$processing_directory"/logs
 
 # Find and enter the directory that ends with "02-bowtie2"
@@ -80,8 +89,10 @@ path_to_bowtie2_tsv=$(pwd)/bowtie2_summary.tsv
 
 #################################### Log Scraping Section 3 ####################################
 
+echo "Scraping log files - Section 3."
+
 # Generate bowtie2_MAPQ tsv
-echo -e "sample\tTOTAL_ALIGNMENTS\tMAPQ10\tPERCENT" >MAPQ_filter_summary.tsv
+echo -e "sample\tTOTAL_ALIGNMENTS\tMAPQ10\tPERCENT" > MAPQ_filter_summary.tsv
 for i in $(ls 02-bowtie2_o*); do
   SAMPLE=$(grep 'sample being mapped is' $i | cut -d " " -f 5)
   TOTAL_ALIGNMENTS=$(grep -A1 'total alignments before MAPQ filter' $i | grep -v "total alignments before MAPQ filter")
@@ -98,6 +109,8 @@ done >> MAPQ_filter_summary.tsv
 path_to_bowtie2_MAPQ_tsv=$(pwd)/MAPQ_filter_summary.tsv
 
 #################################### Feature Extraction Section ####################################
+echo "Running feature extraction."
+
 # Return the processing directory
 cd "$processing_directory"
 
@@ -111,55 +124,58 @@ vector_list=("P2_P_Contig_1__zCas9" "Cloned_ykaf_nptII")
 for path_to_file in analysis/trimmed_align_bowtie2/*.bam; do
   sample_name=$(basename "$path_to_file" .bam | sed 's/_sorted$//')
 
+  echo "Processing sample: $sample_name"
+
   # Extract the row based on the sample name
   row1=$(grep -P "^${sample_name}\t" "$path_to_trim_tsv")
   row2=$(grep -P "^${sample_name}\t" "$path_to_bowtie2_tsv")
   row3=$(grep -P "^${sample_name}\t" "$path_to_bowtie2_MAPQ_tsv")
 
   # Check if row1 exists
-    if [[ -n "$row1" ]]; then
+  if [[ -n "$row1" ]]; then
     # Extract the values from the row1 and store them in separate variables, gsub(/[\(\)%]/ replaces ()% symbols with empty string
-      read_count=$(echo "$row1" | awk -F'\t' '{gsub(/[\(\)]/, "", $2); print $2}')
-      percent_reads_adapter_r1=$(echo "$row1" | awk -F'\t' '{gsub(/[\(\)%]/, "", $3); print $3}')
-      percent_reads_adapter_r2=$(echo "$row1" | awk -F'\t' '{gsub(/[\(\)%]/, "", $4); print $4}')
-      percent_bp_trimmed_r1=$(echo "$row1" | awk -F'\t' '{gsub(/[\(\)%]/, "", $5); print $5}')
-      percent_bp_trimmed_r2=$(echo "$row1" | awk -F'\t' '{gsub(/[\(\)%]/, "", $6); print $6}')
-    else
-      read_count=0
-      percent_reads_adapter_r1=0
-      percent_reads_adapter_r2=0
-      percent_bp_trimmed_r1=0
-      percent_bp_trimmed_r2=0
-    fi
+    read_count=$(echo "$row1" | awk -F'\t' '{gsub(/[\(\)]/, "", $2); print $2}')
+    percent_reads_adapter_r1=$(echo "$row1" | awk -F'\t' '{gsub(/[\(\)%]/, "", $3); print $3}')
+    percent_reads_adapter_r2=$(echo "$row1" | awk -F'\t' '{gsub(/[\(\)%]/, "", $4); print $4}')
+    percent_bp_trimmed_r1=$(echo "$row1" | awk -F'\t' '{gsub(/[\(\)%]/, "", $5); print $5}')
+    percent_bp_trimmed_r2=$(echo "$row1" | awk -F'\t' '{gsub(/[\(\)%]/, "", $6); print $6}')
+  else
+    read_count=0
+    percent_reads_adapter_r1=0
+    percent_reads_adapter_r2=0
+    percent_bp_trimmed_r1=0
+    percent_bp_trimmed_r2=0
+  fi
 
-    # Check if row2 exists
-    if [[ -n "$row2" ]]; then
-      # Extract the values from the row2 and store them in separate variables
-      raligned_1_time=$(echo "$row2" | awk -F'\t' '{gsub(/[\(\)%]/, "", $2); print $2}')
-      multi_mappings=$(echo "$row2" | awk -F'\t' '{gsub(/[\(\)%]/, "", $3); print $3}')
-      unmapped=$(echo "$row2" | awk -F'\t' '{gsub(/[\(\)%]/, "", $4); print $4}')
-    else
-      raligned_1_time=0
-      multi_mappings=0
-      unmapped=0
-    fi
-    
-    # Check if row3 exists
-    if [[ -n "$row3" ]]; then
-      # Extract the values from the row3 and store them in separate variables
-      TOTAL_ALIGNMENTS=$(echo "$row3" | awk -F'\t' '{print $2}')
-      MAPQ10=$(echo "$row3" | awk -F'\t' '{print $3}')
-      PERCENT=$(echo "$row3" | awk -F'\t' '{print $4}')
-     else
-      TOTAL_ALIGNMENTS=0
-      MAPQ10=0
-      PERCENT=0
-    fi
-    
+  # Check if row2 exists
+  if [[ -n "$row2" ]]; then
+    # Extract the values from the row2 and store them in separate variables
+    raligned_1_time=$(echo "$row2" | awk -F'\t' '{gsub(/[\(\)%]/, "", $2); print $2}')
+    multi_mappings=$(echo "$row2" | awk -F'\t' '{gsub(/[\(\)%]/, "", $3); print $3}')
+    unmapped=$(echo "$row2" | awk -F'\t' '{gsub(/[\(\)%]/, "", $4); print $4}')
+  else
+    raligned_1_time=0
+    multi_mappings=0
+    unmapped=0
+  fi
+
+  # Check if row3 exists
+  if [[ -n "$row3" ]]; then
+    # Extract the values from the row3 and store them in separate variables
+    TOTAL_ALIGNMENTS=$(echo "$row3" | awk -F'\t' '{print $2}')
+    MAPQ10=$(echo "$row3" | awk -F'\t' '{print $3}')
+    PERCENT=$(echo "$row3" | awk -F'\t' '{print $4}')
+  else
+    TOTAL_ALIGNMENTS=0
+    MAPQ10=0
+    PERCENT=0
+  fi
+
   # Loop over each vector in the vector list
   for vector_id in "${vector_list[@]}"; do
+    echo "Running feature extraction for vector: $vector_id"
     # Run the feature extraction script
-    python "$path_to_update_script" "$vector_id" "$path_to_file" "$sample_name" "$path_to_output_csv" "$read_count" "$percent_reads_adapter_r1" "$percent_reads_adapter_r2" "$percent_bp_trimmed_r1" "$percent_bp_trimmed_r2" "$raligned_1_time" "$multi_mappings" "$unmapped" "$TOTAL_ALIGNMENTS" "$MAPQ10" "$PERCENT" "$percentage" 
+    python "$path_to_update_script" "$vector_id" "$path_to_file" "$sample_name" "$path_to_output_csv" "$read_count" "$percent_reads_adapter_r1" "$percent_reads_adapter_r2" "$percent_bp_trimmed_r1" "$percent_bp_trimmed_r2" "$raligned_1_time" "$multi_mappings" "$unmapped" "$TOTAL_ALIGNMENTS" "$MAPQ10" "$PERCENT" "$percentage"
   done
 done
 
@@ -167,9 +183,13 @@ done
 conda deactivate
 
 #################################### Extra 2 - delete processed files to save space ####################################
-# remove the processsing and reads directory (deleted at bowtie sbatch step) - end of the script
+echo "Cleaning up processed files."
+
+# remove the processing and reads directory (deleted at bowtie sbatch step) - end of the script
 # cd "$processing_directory"/..
 # rm -r "$processing_directory" "$fastq_directory"
-# for file in slurm*; do 
+# for file in slurm*; do
 #   rm "$file"
 # done
+
+echo "Feature extraction script completed successfully."
