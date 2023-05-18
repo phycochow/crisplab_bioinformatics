@@ -7,6 +7,7 @@
 #SBATCH --time=20:00:00
 #SBATCH --partition=general
 #SBATCH --account=a_crisp
+#SBATCH --requeue
 
 usage="USAGE:
 sbatch 00-pipeline.sh <fastq_directory> <processing_directory> <percentage>"
