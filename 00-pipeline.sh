@@ -4,7 +4,7 @@
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
 #SBATCH --mem-per-cpu=10G
-#SBATCH --time=08:00:00
+#SBATCH --time=13:00:00
 #SBATCH --partition=general
 #SBATCH --account=a_crisp
 #SBATCH --requeue
@@ -61,11 +61,11 @@ echo "Trimming, aligning with Bowtie2, and extracting features..."
 
 # Submit the second job and set its dependency on the first job
 cd "$processing_directory"
-trim_galore_job=$(sbatch --parsable --partition=general --dependency=afterok:$fastqc_job "$path_to_trim_script" "$path_to_sample_list" 04:00:00 16 a_crisp "$fastq_directory")
+trim_galore_job=$(sbatch --parsable --partition=general --dependency=afterok:$fastqc_job "$path_to_trim_script" "$path_to_sample_list" 07:00:00 16 a_crisp "$fastq_directory")
 
 # Submit the third job and set its dependency on the second job, modified bowtie_sbatch to delete the subsampled reads to increase space
 cd "$processing_directory"
-bowtie2_job=$(sbatch --parsable --partition=general --dependency=afterok:$trim_galore_job "$path_to_bowtie_script" "$path_to_sample_list" trimmed 6 "$path_to_reference" 10 05:00:00 50 a_crisp "$fastq_directory")
+bowtie2_job=$(sbatch --parsable --partition=general --dependency=afterok:$trim_galore_job "$path_to_bowtie_script" "$path_to_sample_list" trimmed 6 "$path_to_reference" 10 09:00:00 50 a_crisp "$fastq_directory")
 
 # Submit the forth job and set its dependency on the third job
 cd "$processing_directory"
