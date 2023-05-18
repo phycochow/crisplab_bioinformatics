@@ -15,7 +15,7 @@ usage="USAGE:
 bash 00-main.sh <working_directory>"
 
 working_directory=$1
-running_batch_job=0
+running_batch_job=1
 
 # Path to the main script
 path_to_parameter_sweep_script=/home/s4669612/gitrepos/crisplab_wgs/00-parameter_sweep.sh
@@ -71,10 +71,14 @@ for percentage in "${percentages[@]}"; do
         while [[ $running_batch_job -gt 0 ]]; do # Stops the loop when the no. of running/pending job is no longer greater than 0
             running_batch_job=0
             for job_id in "${batch_jobs[@]}"; do
-                if [[ $(squeue -h -j $job_id -t PD,R | wc -l) -gt 0 ]]; then  # returns True if the no. of running/pending job > 0
+                condition=$(squeue -h -j $job_id -t PD,R | wc -l)
+                echo condition is $condition
+                if [[ $condition -gt 0 ]]; then  # returns True if the no. of running/pending job > 0
                     running_batch_job=$((running_batch_job+1))  # If any job is not completed, increment running_batch_job
+                    echo running_batch_job is $running_batch_job
                 fi
             done
+            echo sleeping 25 seconds
             sleep 25
         done
 
