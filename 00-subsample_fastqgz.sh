@@ -37,3 +37,7 @@ gz_file=$(basename "$file_path")
 # Step 2 - Subsample and uncompress the fastq.gz files, store as .fastq - sidenote this took me 26+2 HOURS to make a non-bugged version!!!
 "$path_to_seqtk" sample -s100 "$file_path" "$percentage" > "$fastq_directory"/"${gz_file%.gz}"
 
+job_id=$SLURM_JOBID
+while [[ $(squeue -h -j $job_id -t PD,R) ]]; do
+    sleep 20
+done
