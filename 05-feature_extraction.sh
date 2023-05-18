@@ -168,8 +168,8 @@ conda deactivate
 
 #################################### Extra 2 - delete processed files to save space ####################################
 # remove the processsing and reads directory (deleted at bowtie sbatch step) - end of the script
-cd "$processing_directory"/..
-rm -r "$processing_directory" "$fastq_directory"
-for file in slurm*; do 
-  rm "$file"
-done
+# cd "$processing_directory"/..
+# rm -r "$processing_directory" "$fastq_directory"
+# for file in slurm*; do 
+#   rm "$file"
+# done
