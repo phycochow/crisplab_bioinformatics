@@ -45,8 +45,8 @@ percentages=("${new_percentages[@]}")
 
 #################################### Run ########################################
 # Specify the number of duplicates and the batch size
-total_jobs=4
-batch_size=2
+total_jobs=72hour*rate_of_jobs_per_hour*batch_size
+batch_size=ram_per_job
 
 for percentage in "${percentages[@]}"; do
     echo "Processing percentage: $percentage"
