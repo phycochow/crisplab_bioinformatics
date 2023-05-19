@@ -15,7 +15,7 @@ bash 00-main.sh <working_directory>"
 
 working_directory=$1
 running_batch_job=1
-max_space=0
+max_value=0
 
 # Path to the main script
 path_to_parameter_sweep_script=/home/s4669612/gitrepos/crisplab_wgs/00-parameter_sweep.sh
@@ -82,7 +82,7 @@ for ((i=1; i<=total_jobs; i+=batch_size)); do
         value=$(/usr/lpp/mmfs/bin/mmlsquota -j S0100 --block-size=auto scratch | awk 'NR==3 {sub(/.$/,"",$3); print $3}')
         if [[ $value > $max_value ]]; then
             max_value=$value
-            echo "max_value: $max_value"
+            echo "Data storage peaked at: $max_value GB"
         else
             echo Data storage unaffected, sleep 3 minutes...
             sleep 180
