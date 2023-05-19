@@ -84,7 +84,7 @@ for ((i=1; i<=total_jobs; i+=batch_size)); do
         if [[ $value > $max_value ]]; then
             max_value=$value
         fi
-        echo "Data storage peaked at: $max_value GB, total run time for jobs $i to $((j-1)): $total_time"
+        echo "Data storage peaked at: $max_value GB, total run time for jobs $i to $((j-1)): $total_time" minutes
         total_time+=3
         sleep 180
     done
