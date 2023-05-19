@@ -23,7 +23,25 @@ path_to_pipeline_script=/home/s4669612/gitrepos/crisplab_wgs/00-pipeline.sh
 path_to_subsampling_script=/home/s4669612/gitrepos/crisplab_wgs/00-subsample_fastqgz.sh
 
 # Construct the list of percentages - constant throughout the script
-percentages=($(seq 0.01 0.01 0.03))
+percentages=($(seq 0.01 0.01 0.99))
+
+# Changes the order eg 1,2,3,4 to 1,4,2,3 so the computational cost is averaged through the loop
+n=${#percentages[@]}
+new_percentages=()
+
+for ((i=0; i<n; i++))
+do
+    index=$((i+1))
+    if ((index%2 == 0))
+    then
+        new_index=$((n-index/2))
+    else
+        new_index=$(((index+1)/2))
+    fi
+    new_percentages[$((new_index-1))]=${percentages[i]}
+done
+
+percentages=("${new_percentages[@]}")
 
 #################################### Run ########################################
 # Specify the number of duplicates and the batch size
