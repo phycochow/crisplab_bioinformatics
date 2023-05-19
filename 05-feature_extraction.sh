@@ -31,6 +31,61 @@ percentage=$3
 path_to_update_script=/home/s4669612/gitrepos/crisplab_wgs/04-feature_extraction.py
 path_to_output_csv="$processing_directory"/../outputs/output.csv
 
+#!/bin/bash
+
+# Function to update csv
+update_csv() {
+    # Parse the command-line arguments
+    vector_id=$1
+    bam_file=$2
+    sample_name=$3
+    output_file=$4
+    read_count=$5
+    percent_reads_adapter_r1=$6
+    percent_reads_adapter_r2=$7
+    percent_bp_trimmed_r1=$8
+    percent_bp_trimmed_r2=$9
+    raligned_1_time=${10}
+    multi_mappings=${11}
+    unmapped=${12}
+    total_alignments=${13}
+    mapq10=${14}
+    mapq10_percent=${15}
+    percentage=${16}
+
+    # Open the BAM file and count mapped reads
+    mapped_reads=$(samtools view -c -F 4 $bam_file)
+
+    # Calculate read coverage by getting the reference sequence length for the specified chromosome by id
+    total_bases=$(samtools view -H $bam_file | awk -v vector_id="$vector_id" '$1 == "@SQ" && $2 ~ /SN:'"$vector_id"'/ {sub(".*LN:","",$3); print $3}')
+
+    # Calculate the coverage percentage
+    coverage_percentage=$(samtools mpileup -r $vector_id -d 0 $bam_file | awk -v total_bases="$total_bases" \
+        '{ count++ } END { print (count / total_bases) * 100 }')
+
+    # Read the existing CSV file
+    IFS="," read -r -a header < "$output_file"
+    rows=()
+    while IFS="," read -r -a row; do
+        rows+=("${row[*]}")
+    done < "$output_file"
+
+    # Create a new row
+    new_row=("$sample_name" "$percentage" "$vector_id" "0" "$total_bases" "$mapped_reads" "$coverage_percentage" \
+        "$read_count" "$percent_reads_adapter_r1" "$percent_reads_adapter_r2" "$percent_bp_trimmed_r1" \
+        "$percent_bp_trimmed_r2" "$raligned_1_time" "$multi_mappings" "$unmapped" "$total_alignments" \
+        "$mapq10" "$mapq10_percent")
+
+    # Append the new row to the existing rows
+    rows+=("${new_row[*]}")
+
+    # Write the updated rows to the CSV file
+    printf "%s\n" "${header[*]}" > "$output_file"
+    for row in "${rows[@]}"; do
+        printf "%s\n" "$row" >> "$output_file"
+    done
+}
+
 #################################### Extra 1 - delete trimmed fastq to save space ####################################
 echo "Deleting trimmed fastq files."
 rm -r "$processing_directory"/analysis/trimmed/
@@ -174,8 +229,8 @@ for path_to_file in analysis/trimmed_align_bowtie2/*.bam; do
   # Loop over each vector in the vector list
   for vector_id in "${vector_list[@]}"; do
     echo "Running feature extraction for vector: $vector_id"
-    # Run the feature extraction script
-    python "$path_to_update_script" "$vector_id" "$path_to_file" "$sample_name" "$path_to_output_csv" "$read_count" "$percent_reads_adapter_r1" "$percent_reads_adapter_r2" "$percent_bp_trimmed_r1" "$percent_bp_trimmed_r2" "$raligned_1_time" "$multi_mappings" "$unmapped" "$TOTAL_ALIGNMENTS" "$MAPQ10" "$PERCENT" "$percentage"
+    # Run the update csv function
+    update_csv "$vector_id" "$path_to_file" "$sample_name" "$path_to_output_csv" "$read_count" "$percent_reads_adapter_r1" "$percent_reads_adapter_r2" "$percent_bp_trimmed_r1" "$percent_bp_trimmed_r2" "$raligned_1_time" "$multi_mappings" "$unmapped" "$TOTAL_ALIGNMENTS" "$MAPQ10" "$PERCENT" "$percentage"
   done
 done
 
