@@ -48,7 +48,7 @@ def count_mapped_reads():
             covered_bases += 1
 
     # Calculate the coverage percentage
-    coverage_percentage = (covered_bases / total_bases) * 100
+    coverage_percentage = float((covered_bases / total_bases) * 100)
 
     df = pd.read_csv(args.output_file)
 
