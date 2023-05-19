@@ -69,7 +69,7 @@ bowtie2_job=$(sbatch --parsable --partition=general --dependency=afterok:$trim_g
 
 # Submit the forth job and set its dependency on the third job
 cd "$processing_directory"
-extract_bam_features_job=$(sbatch --parsable --partition=general --dependency=afterok:$bowtie2_job "$path_to_feature_extraction_script" "$processing_directory" "$fastq_directory" "$percentage")
+extract_bam_features_job=$(sbatch --parsable --partition=general --output=../extract_$bowtie2_job.out --dependency=afterok:$bowtie2_job "$path_to_feature_extraction_script" "$processing_directory" "$fastq_directory" "$percentage")
 
 # Wait until extract_bam_features_job is completed
 while [[ $(squeue -h -j $extract_bam_features_job -t PD,R) ]]; do
