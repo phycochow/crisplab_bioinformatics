@@ -85,7 +85,7 @@ $script_to_sbatch)
 # Extract the job ID from sbatch output
 job_id=$(echo $sbatch_output | awk '{print $4}')
 while [[ $(squeue -h -j $job_id -t PD,R) ]]; do
-    sleep 60
+    sleep 90
 done
 echo "All jobs completed."
 
