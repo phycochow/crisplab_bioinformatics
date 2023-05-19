@@ -128,3 +128,4 @@ samtools view -c $outbam
 
 #Delete the temporary sam.
 rm -v ${outsam}
+rm -v $fq_1 $fq_2
