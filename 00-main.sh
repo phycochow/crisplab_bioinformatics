@@ -73,6 +73,10 @@ for ((i=1; i<=total_jobs; i+=batch_size)); do
             fi
         done
         echo "sleeping 15 min"
+        output=$(/usr/lpp/mmfs/bin/mmlsquota -j S0100 --block-size=auto scratch)
+        blocks=$(echo "$output" | awk 'NR>2 {print $3}')
+#         Special code
+        echo "Current used space: $(/usr/lpp/mmfs/bin/mmlsquota -j S0100 --block-size=auto scratch | awk 'NR>2 {print $3}')"
         sleep 900
     done
 done
