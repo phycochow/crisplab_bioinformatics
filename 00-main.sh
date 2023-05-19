@@ -31,21 +31,17 @@ batch_size=6
 
 # Loop through the job array
 for ((i=1; i<=total_jobs; i+=batch_size)); do
-    echo "Processing batch: $i to $((i+batch_size-1))"
-
     batch_jobs=()
-    echo "batch_jobs has been reset to ${batch_jobs[@]}"
-
+    echo "Processing batch: $i to $((i+batch_size-1)), batch_jobs has been reset to ${batch_jobs[@]}"
+    
     # Submit jobs for the current batch
     for ((j=i; j<i+batch_size; j++)); do
         if [ $j -le $total_jobs ]; then
-            echo "Processing job: $j"
-
+            
+            # Set index and percentage
             index=$((j % no_percentages))
-            echo "The remainder of $j divided by $no_percentages is: $index"
-
             percentage=${percentages[index]}
-            echo "Processing percentage: $percentage"
+            echo "Processing run: $j, Processing percentage: $percentage" 
 
             # Go/return to parent directory of inputs outputs and processing
             cd "$working_directory"
@@ -56,14 +52,11 @@ for ((i=1; i<=total_jobs; i+=batch_size)); do
             mkdir "$fastq_directory" "$processing_directory"
             mkdir "$processing_directory"/analysis "$processing_directory"/logs
 
-            echo "Submitting subsampling job for job $j"
+            echo "Submitting subsampling job: $subsampling_job and run_pipeline_job: $run_pipeline_job for run $j"
             subsampling_job=$(sbatch --parsable "$path_to_subsampling_script" "$fastq_directory" "$percentage")
-            echo "subsampling_job: $subsampling_job"
-            echo "Submitting pipeline job for job $j"
-
-            ### Set the dependency on the completion of all matching jobs for run_pipeline_job ###
             run_pipeline_job=$(sbatch --parsable --dependency=afterok:$subsampling_job "$path_to_pipeline_script" "$fastq_directory" "$processing_directory" "$percentage")
-            echo "run_pipeline_job: $run_pipeline_job"
+            
+            # Add the running pipeline job to the wait list
             batch_jobs+=("$run_pipeline_job")
             echo "batch_jobs: ${batch_jobs[@]}"
         fi
@@ -74,15 +67,13 @@ for ((i=1; i<=total_jobs; i+=batch_size)); do
         running_batch_job=0
         for job_id in "${batch_jobs[@]}"; do
             condition=$(squeue -h -j "$job_id" -t PD,R | wc -l)
-            echo "condition is $condition"
             if [[ $condition -gt 0 ]]; then  # returns True if the no. of running/pending job > 0
                 running_batch_job=$((running_batch_job+1))  # If any job is not completed, increment running_batch_job
-                echo "running_batch_job is $running_batch_job"
+                echo "$running_batch_job pipline jobs are still running"
             fi
         done
         echo "sleeping 15 min"
         sleep 900
     done
-
 done
-# Proceed to the next batch
+
