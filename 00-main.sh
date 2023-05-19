@@ -40,7 +40,7 @@ for ((i=1; i<=total_jobs; i+=batch_size)); do
             
             # Set index and percentage
             index=$((j % no_percentages))
-            percentage=${percentages[index]}
+            percentage=${percentages[$((index-1))]}
             echo "Processing run: $j, Processing percentage: $percentage" 
 
             # Go/return to parent directory of inputs outputs and processing
