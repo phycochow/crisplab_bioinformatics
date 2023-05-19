@@ -9,6 +9,7 @@
 #SBATCH --partition=general
 #SBATCH --account=a_crisp
 #SBATCH --requeue
+#SBATCH --output=/dev/null
 
 usage="USAGE:
 sbatch 00-subsample_fastqgz.sh <fastq_directory> <percentage>"
