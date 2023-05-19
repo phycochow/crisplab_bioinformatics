@@ -177,7 +177,7 @@ for path_to_file in analysis/trimmed_align_bowtie2/*.bam; do
     
     # check if the storage file is avaiable
     while lsof "$path_to_output_csv" >/dev/null; do
-        echo "The file output.csv is being accessed."
+        echo "The file output.csv is being accessed. Sleep 10 seconds"
         sleep 10
     done
     
