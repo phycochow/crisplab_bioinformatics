@@ -27,7 +27,7 @@ no_percentages=${#percentages[@]}
 #################################### Run ########################################
 # Specify the number of duplicates and the batch size
 total_jobs=99
-batch_size=6
+batch_size=5
 
 # Loop through the job array
 for ((i=1; i<=total_jobs; i+=batch_size)); do
