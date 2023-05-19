@@ -174,6 +174,13 @@ for path_to_file in analysis/trimmed_align_bowtie2/*.bam; do
   # Loop over each vector in the vector list
   for vector_id in "${vector_list[@]}"; do
     echo "Running feature extraction for vector: $vector_id"
+    
+    # check if the storage file is avaiable
+    while lsof "$path_to_output_csv" >/dev/null; do
+        echo "The file output.csv is being accessed."
+        sleep 10
+    done
+    
     # Run the feature extraction script
     python "$path_to_update_script" "$vector_id" "$path_to_file" "$sample_name" "$path_to_output_csv" "$read_count" "$percent_reads_adapter_r1" "$percent_reads_adapter_r2" "$percent_bp_trimmed_r1" "$percent_bp_trimmed_r2" "$raligned_1_time" "$multi_mappings" "$unmapped" "$TOTAL_ALIGNMENTS" "$MAPQ10" "$PERCENT" "$percentage"
   done
@@ -183,13 +190,6 @@ done
 conda deactivate
 
 #################################### Extra 2 - delete processed files to save space ####################################
-echo "Cleaning up processed files."
 
-# remove the processing and reads directory (deleted at bowtie sbatch step) - end of the script
-# cd "$processing_directory"/..
-# rm -r "$processing_directory" "$fastq_directory"
-# for file in slurm*; do
-#   rm "$file"
-# done
 
 echo "Feature extraction script completed successfully."
