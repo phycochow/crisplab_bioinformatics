@@ -35,7 +35,7 @@ running_pipelines=()
 
 for ((run_id=1; run_id<=total_jobs; run_id++)); do
 
-    echo "Processing batch: $run_id to $((run_id+batch_size-1)), running_pipelines has been reset"
+    echo "Processing batch: $run_id to $((run_id+batch_size-1))"
 
     if [[ ${#running_pipelines[@]} -lt $batch_size ]]; then
         # Set index and percentage
