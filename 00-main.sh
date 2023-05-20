@@ -40,7 +40,7 @@ for ((run_id=1; run_id<=total_jobs; run_id++)); do
 
     echo "Processing batch: $run_id to $((run_id+batch_size-1)), running_pipelines has been reset"
 
-    if [[ ${#running_pipelines[@]} -lt $batch_size ]]; then
+    while [[ ${#running_pipelines[@]} -lt $batch_size ]]; then
 
         # Set index and percentage
         index=$((run_id % no_percentages))
@@ -63,13 +63,14 @@ for ((run_id=1; run_id<=total_jobs; run_id++)); do
         # Add the running pipeline job to the wait list
         running_pipelines+=("$run_pipeline_job")
         echo "running_pipelines: ${running_pipelines[@]}"
-    fi
-
+    done
+    
     # If the number of running pipelines is equal to batch size, check status, and remove from running pipeline list if done
     while [[ ${#running_pipelines[@]} -eq $batch_size ]]; do
         echo Checking status of jobs...
         updated_running_pipelines=()
-
+        
+        # Checks status of each job and add to updated_running_pipelines
         for job_id in "${running_pipelines[@]}"; do
             squeue_rows=$(squeue -h -j "$job_id" -t PD,R | wc -l)
 
@@ -80,17 +81,17 @@ for ((run_id=1; run_id<=total_jobs; run_id++)); do
                 echo "Pipeline $job_id is completed"
             fi
         done
-        running_pipelines=updated_running_pipelines
-
-        # Sleeps if the updated list is still unchanged
+       
+        # Sleeps if the number of running jobs is still unchanged
         if [[ ${#updated_running_pipelines[@]} -eq $batch_size ]]; then
             value=$(/usr/lpp/mmfs/bin/mmlsquota -j S0100 --block-size=auto scratch | awk 'NR==3 {sub(/.$/,"",$3); print $3}')
             if [[ $value > $max_value ]]; then
                 max_value=$value
             fi
-            echo "Data storage peaked at: $max_value GB, total run time for up to job: $run_id, $total_time minutes, sleeping for 4 minutes"
+            echo "Data storage peaked at: $max_value GB, total run time for up to job: $run_id for $total_time minutes, sleeping for 4 minutes"
             ((total_time+=3))
             sleep 240
         fi
+        running_pipelines=updated_running_pipelines
     done
 done
