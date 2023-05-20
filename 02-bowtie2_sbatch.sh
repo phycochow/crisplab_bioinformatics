@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=bowtie2
+#SBATCH --job-name=bowtie2_sbatch
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
