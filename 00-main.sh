@@ -62,36 +62,35 @@ for ((run_id=1; run_id<=total_jobs; run_id++)); do
     fi
     
     # If the number of running pipelines is equal to batch size, check status, and remove from running pipeline list if done
-    while true; do
-        if [[ ${#running_pipelines[@]} -eq $batch_size ]]; then
-            echo Checking status of jobs...
-            updated_running_pipelines=()
-
-            # Checks status of each job and add to updated_running_pipelines
-            for job_id in "${running_pipelines[@]}"; do
-                squeue_rows=$(squeue -h -j "$job_id" -t PD,R 2>/dev/null | wc -l)
-
-                # if the number of rows (excepts invalid id) for a specific running/pending pipeline > 0, then the job is not completed
-                if [[ $squeue_rows -gt 0 ]]; then
-                    updated_running_pipelines+=("$job_id")
-                else
-                    echo "Pipeline $job_id is completed"
-                fi
-            done
-
-            if [[ ${#updated_running_pipelines[@]} -lt $batch_size ]]; then
-                break
-            else
-                value=$(/usr/lpp/mmfs/bin/mmlsquota -j S0100 --block-size=auto scratch | awk 'NR==3 {sub(/.$/,"",$3); print $3}')
-                if [[ $value -gt $max_value ]]; then
-                    max_value=$value
-                fi
-                echo "Data storage peaked at: $max_value GB, total run time for up to job: $run_id for $total_time minutes, sleeping for 4 minutes"
-                ((total_time+=3))
-                sleep 240
-            fi
-            running_pipelines=updated_running_pipelines
+    while [[ ${#running_pipelines[@]} -eq $batch_size ]]; do
+        
+        # Update storage and sleep 4 minutes
+        value=$(/usr/lpp/mmfs/bin/mmlsquota -j S0100 --block-size=auto scratch | awk 'NR==3 {sub(/.$/,"",$3); print $3}')
+        if [[ $value -gt $max_value ]]; then
+            max_value=$value
         fi
+        echo "Data storage peaked at: $max_value GB, total run time for up to job: $run_id for $total_time minutes, sleeping for 4 minutes"
+        ((total_time+=3))
+        sleep 240
+        
+        
+        echo Checking status of jobs...
+        updated_running_pipelines=()
+        
+        # Checks status of each job and add to updated_running_pipelines
+        for job_id in "${running_pipelines[@]}"; do
+            squeue_rows=$(squeue -h -j "$job_id" -t PD,R 2>/dev/null | wc -l)
+
+            # if the number of rows (excepts invalid id) for a specific running/pending pipeline > 0, then the job is not completed
+            if [[ $squeue_rows -gt 0 ]]; then
+                updated_running_pipelines+=("$job_id")
+            else
+                echo "Pipeline $job_id is completed"
+            fi
+        done
+
+        running_pipelines=updated_running_pipelines
+
     done
 done
 
