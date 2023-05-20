@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=trim_galore
+#SBATCH --job-name=trim_galore_gz_sbatch
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --cpus-per-task=1
