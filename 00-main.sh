@@ -88,9 +88,9 @@ for ((run_id=1; run_id<=total_jobs; run_id++)); do
             if [[ $value > $max_value ]]; then
                 max_value=$value
             fi
-            echo "Data storage peaked at: $max_value GB, total run time for jobs $i to $((j-1)): $total_time minutes"
+            echo "Data storage peaked at: $max_value GB, total run time for up to job: $run_id, $total_time minutes, sleeping for 4 minutes"
             ((total_time+=3))
-            sleep 180
+            sleep 240
         fi
     done
 done
