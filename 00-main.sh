@@ -72,9 +72,9 @@ for ((run_id=1; run_id<=total_jobs; run_id++)); do
         
         # Checks status of each job and add to updated_running_pipelines
         for job_id in "${running_pipelines[@]}"; do
-            squeue_rows=$(squeue -h -j "$job_id" -t PD,R | wc -l)
+            squeue_rows=$(squeue -h -j "$job_id" -t PD,R 2>/dev/null | wc -l)
 
-            # if the number of rows for a specific running/pending pipeline > 0, then the job is not completed
+            # if the number of rows (excepts invalid id) for a specific running/pending pipeline > 0, then the job is not completed
             if [[ $squeue_rows -gt 0 ]]; then
                 updated_running_pipelines+=("$job_id")
             else
