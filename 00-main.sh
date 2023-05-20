@@ -37,7 +37,7 @@ for ((run_id=1; run_id<=total_jobs; run_id++)); do
 
     echo "Processing batch: $run_id to $((run_id+batch_size-1)), running_pipelines has been reset"
 
-    if [[ ${#running_pipelines[@]} -lt $((batch_size+1) ]]; then
+    if [[ ${#running_pipelines[@]} -lt $((batch_size) ]]; then
         # Set index and percentage
         index=$((run_id % no_percentages))
         percentage=${percentages[$((index-1))]}
@@ -66,7 +66,7 @@ for ((run_id=1; run_id<=total_jobs; run_id++)); do
         
         # Update storage and sleep 4 minutes
         value=$(/usr/lpp/mmfs/bin/mmlsquota -j S0100 --block-size=auto scratch | awk 'NR==3 {sub(/.$/,"",$3); print $3}')
-        if [[ $value -gt $max_value ]]; then
+        if (( $(echo "$value > $max_value" | bc -l) )); then
             max_value=$value
         fi
         echo "Data storage peaked at: $max_value GB, total run time for up to job: $run_id for $total_time minutes, sleeping for 4 minutes"
