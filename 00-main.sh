@@ -37,7 +37,7 @@ for ((run_id=1; run_id<=total_jobs; run_id++)); do
 
     echo "Processing batch: $run_id to $((run_id+batch_size-1)), running_pipelines has been reset"
 
-    if [[ ${#running_pipelines[@]} -lt $((batch_size) ]]; then
+    if [[ ${#running_pipelines[@]} -lt $batch_size ]]; then
         # Set index and percentage
         index=$((run_id % no_percentages))
         percentage=${percentages[$((index-1))]}
@@ -70,7 +70,7 @@ for ((run_id=1; run_id<=total_jobs; run_id++)); do
             max_value=$value
         fi
         echo "Data storage peaked at: $max_value GB, total run time for up to job: $run_id for $total_time minutes, sleeping for 4 minutes"
-        ((total_time+=3))
+        ((total_time+=4))
         sleep 240
         
         
@@ -89,8 +89,6 @@ for ((run_id=1; run_id<=total_jobs; run_id++)); do
             fi
         done
 
-        running_pipelines=updated_running_pipelines
-
+        running_pipelines=("${updated_running_pipelines[@]}")
     done
 done
-
