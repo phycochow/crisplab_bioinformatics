@@ -69,7 +69,7 @@ for ((run_id=1; run_id<=total_jobs; run_id++)); do
         if (( $(echo "$value > $max_value" | bc -l) )); then
             max_value=$value
         fi
-        echo "Data storage peaked at: $max_value GB, total run time for up to job: $run_id for $total_time minutes, sleeping for 4 minutes"
+        echo "Data storage peaked at: $max_value GB, ran/running $job_id with maximum of $batch_size parallel jobs for $total_time minutes. Sleeping for 4 minutes.."
         ((total_time+=4))
         sleep 240
         
