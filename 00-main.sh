@@ -27,7 +27,7 @@ no_percentages=${#percentages[@]}
 
 #################################### Run ########################################
 # Specify the number of duplicates and the batch size
-total_jobs=50
+total_jobs=55
 batch_size=4
 max_value=0
 total_time=0
