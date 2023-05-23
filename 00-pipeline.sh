@@ -34,7 +34,7 @@ echo "Percentage: $percentage"
 
 # Set file paths
 path_to_sample_list="$inputs_directory"/samples.txt
-path_to_reference="$inputs_directory"/sorghum/Sbicolor_454_v3.0.1_vectors
+path_to_reference="$inputs_directory"/sorghum/zCas9_vectors.fasta
 path_to_qc_script=/home/s4669612/gitrepos/crisplab_wgs/01-qc_sbatch.sh
 path_to_trim_script=/home/s4669612/gitrepos/crisplab_wgs/01-trim_galore_gz_sbatch.sh
 path_to_bowtie_script=/home/s4669612/gitrepos/crisplab_wgs/02-bowtie2_sbatch.sh
