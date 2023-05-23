@@ -21,7 +21,7 @@ path_to_pipeline_script=/home/s4669612/gitrepos/crisplab_wgs/00-pipeline.sh
 path_to_subsampling_script=/home/s4669612/gitrepos/crisplab_wgs/00-subsample_fastqgz.sh
 
 # Construct the list of percentages - constant throughout the script
-percentages=(0.95 0.07 0.93 0.09 0.91 0.11 0.89 0.13 0.87 0.15 0.85 0.17 0.83 0.19 0.81 0.21 0.79 0.23 0.77 0.25 0.75 0.27 0.73 0.29 0.71 0.30 0.70 0.31 0.69 0.33 0.67 0.35 0.65 0.37 0.63 0.39 0.61 0.41 0.59 0.42 0.58 0.43 0.57 0.45 0.55 0.47 0.53 0.49 0.51 0.50)
+percentages=(0.01 0.99 0.03 0.97 0.05 0.95 0.07 0.93 0.09 0.91 0.11 0.89 0.13 0.87 0.15 0.85 0.17 0.83 0.19 0.81 0.21 0.79 0.23 0.77 0.25 0.75 0.27 0.73 0.29 0.71 0.30 0.70 0.31 0.69 0.33 0.67 0.35 0.65 0.37 0.63 0.39 0.61 0.41 0.59 0.42 0.58 0.43 0.57 0.45 0.55 0.47 0.53 0.49 0.51 0.50)
 
 no_percentages=${#percentages[@]}
 
