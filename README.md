@@ -1,11 +1,12 @@
 # Peter-Crisp's-lab-NGS-transgene-detection-project
-These scripts run the bioinformtaic pipeline to map pair-end reads to a reference genome iteratively to extract features from the process. These features could be used for developing a reliable model with supervised learning to classify transgenic organisms from NGS data.
+These scripts run the bioinformtaic pipeline to map pair-end reads to a reference genome iteratively to extract features from the process. These features could be used for developing a reliable model with supervised learning to classify transgenic organisms from NGS data. The main script handles the iterative process and the SLURM schedule on Bunya, a high-performance computing cluster.
 
 This is an undergrad project with Dr Peter Crisp at the University of Queensland.
  
 To install, go to terminal and:
 ```bash
 git clone https://github.com/phycochow/crisplab_wgs.git
+path_to_scripts=$(pwd)/crisplab_wgs
 ```
 
 The working directory is defined as the parent of 2: outputs, inputs; and the sibling of raw_reads_template 
@@ -25,7 +26,7 @@ Make sure the file type is .fastq
 To run the code:
 ```bash
 cd path/to/working/directory/
-sbatch 00-main.sh $(pwd)
+sbatch path_to_scripts/00-main.sh $(pwd)
 ```
 
 When you mess up and want to restart:
