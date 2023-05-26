@@ -1,5 +1,5 @@
 # Peter-Crisp's-lab-NGS-transgene-detection-project
-These scripts develop a reliable model to determine transgenic organisms by extracting features from NGS data for supervised learning.
+These scripts run the bioinformtaic pipeline to map pair-end reads to a reference genome iteratively to extract features from the process. These features could be used for developing a reliable model with supervised learning to classify transgenic organisms from NGS data.
 
 This is an undergrad project with Dr Peter Crisp at the University of Queensland.
  
