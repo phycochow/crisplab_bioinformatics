@@ -28,6 +28,7 @@ To run the code:
 cd path/to/working/directory/
 sbatch path_to_scripts/00-main.sh $(pwd)
 ```
+The main script is hard-coded to run odd percentages from 1% to 99%. You could change the list to run it at 99.9%. Running the full samples is not avaiable yet. For that purpose, the scripts in the pipeline also needs to be modified to accept compressed fastq.gz files since the subsampling step converts them to fastq.
 
 When you mess up and want to restart:
 ```bash
