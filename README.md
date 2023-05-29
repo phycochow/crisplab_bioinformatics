@@ -1,4 +1,4 @@
-# Peter-Crisp's-lab-NGS-transgene-detection-project
+# Crisp's-Lab-NGS-Transgene-Detection-Project
 These scripts run the bioinformtaic pipeline to map pair-end reads to a reference genome iteratively to extract features from the process. These features could be used for developing a reliable model with supervised learning to classify transgenic organisms from NGS data. The main script handles the iterative process and the SLURM scheduler on Bunya, a high-performance computing cluster.
 
 This is an undergrad project with Dr Peter Crisp at the University of Queensland.
