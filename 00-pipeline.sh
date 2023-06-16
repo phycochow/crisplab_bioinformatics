@@ -80,13 +80,13 @@ while [[ $(squeue -h -j $extract_bam_features_job -t PD,R) ]]; do
 done
 
 #################################### Extra 2 - delete processed files to save space ####################################
-echo "Cleaning up..."
-echo Removing "$processing_directory" "$fastq_directory" 
-# remove the processing and reads directory (deleted at bowtie sbatch step) - end of the script
-cd "$processing_directory"/..
-rm -r "$processing_directory" "$fastq_directory"
+# echo "Cleaning up..."
+# echo Removing "$processing_directory" "$fastq_directory" 
+# # remove the processing and reads directory (deleted at bowtie sbatch step) - end of the script
+# cd "$processing_directory"/..
+# rm -r "$processing_directory" "$fastq_directory"
 
-echo "Pipeline completed successfully."
+# echo "Pipeline completed successfully."
 
 #################################### Other previous code  ####################################
 
