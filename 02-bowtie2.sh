@@ -18,23 +18,13 @@ module load bowtie2/2.4.5-gcc-11.3.0
 module load samtools/1.13-gcc-10.3.0
 
 ########## Set up dirs #################
-
-#get job ID
-#use sed, -n supression pattern space, then 'p' to print item number {PBS_ARRAYID} eg 2 from {list}
+#get job ID, use sed, -n supression pattern space, then 'p' to print item number {PBS_ARRAYID} eg 2 from {list}
 ID="$(/bin/sed -n ${SLURM_ARRAY_TASK_ID}p ${LIST})"
-
 echo sample being mapped is $ID
-#sample_dir="${reads_folder}/${ID}"
 
-# enter analysis folder
 cd analysis
 
-# # check how many faqs there are
-# fastqs="$(find $reads_folder -type f -name ${ID}_*.fq*)"
-# # convert to array to count elements
-# fastqs_count=($fastqs)
-
-#make adaligned folder bowtie2 (caution this will not fail if dir already exists)
+# Make adaligned folder bowtie2 (caution this will not fail if dir already exists), read_folder is an environmental variable defined in sbatch
 outdir="${reads_folder}_align_bowtie2"
 mkdir -p ${outdir}
 
@@ -44,7 +34,53 @@ tmpbam="${outdir}/${ID}.bam"
 outbam="${outdir}/${ID}_sorted.bam"
 
 ########## Run #################
+fq_1=$(find ${reads_folder} -name "${ID}_R1*.fq" -type f)
+fq_2=$(find ${reads_folder} -name "${ID}_R2*.fq" -type f)
 
+if [[ -n "$fq_1" && -n "$fq_2" ]]; then
+  echo "Paired reads"
+  bowtie2 \
+    -x $bt2_genome \
+    --phred33 \
+    --local \
+    --very-sensitive-local \
+    -X 2000 \
+    -p $bt2_threads \
+    -1 $fq_1 \
+    -2 $fq_2 \
+    -S "$outsam"
+  
+elif [[ -n "$R1_file" ]]; then
+  echo "Single end, this is not tested if it works"
+  bowtie2 \
+    -x $bt2_genome \
+    --phred33 \
+    --local \
+    --very-sensitive-local \
+    -X 2000 \
+    -p $bt2_threads \
+    -1 $fq_1 \
+    -S "$outsam"
+fi
+
+#################### Sort and Index ####################
+# Count total alignments before after filtering
+echo "${ID} total alignments before MAPQ filter (might include reads that map to multiple locations)"
+samtools view -c ${outsam}
+
+samtools view -q $q10filter -b -@ $bt2_threads $outsam | samtools sort -m 8G -@ $bt2_threads -o $outbam
+
+#Make an index of the sorted bam file
+samtools index ${outbam}
+
+# Count total reads after filtering
+echo "${ID} total alignments after MAPQ filter (should only include reads that map to one location)"
+samtools view -c $outbam
+
+# Delete the temporary sam.
+rm -v ${outsam} $fq_1 $fq_2
+
+#################### Pete's comments on Bowtie 2 ####################
 # For reads longer than about 50 bp Bowtie 2 is generally faster, more sensitive, and uses less memory than Bowtie 1.
 # For relatively short reads (e.g. less than 50 bp) Bowtie 1 is sometimes faster and/or more sensitive.
 
@@ -73,59 +109,8 @@ outbam="${outdir}/${ID}_sorted.bam"
 # Still, this mode can be effective and fast in situations where the user cares more about whether a read aligns
 # (or aligns a certain number of times) than where exactly it originated.
 
-# if (( "${#fastqs_count[@]}" == 2 )); then
-
-echo "paired reads"
-
-# this is assume there is only one fq per sample - in R1 and R2 format for PE
-# also assumes the suffix in "fq"
-fq_1="${reads_folder}/${ID}_R1*.fq"
-fq_2="${reads_folder}/${ID}_R2*.fq"
-
-bowtie2 \
--x $bt2_genome \
---phred33 \
---local \
---very-sensitive-local \
--X 2000 \
--p $bt2_threads \
--1 $fq_1 \
--2 $fq_2 \
--S "$outsam"
-
-# else
-# echo "assuming single end"
-
-# bowtie2 \
-# -x $bt2_genome \
-# --phred33 \
-# --local \
-# --very-sensitive-local \
-# -X 2000 \
-# -p $bt2_threads \
-# -U $fastqs \
-# -S "$outsam"
-
-# fi
-
-# count total alignments before after filtering
-echo "${ID} total alignments before MAPQ filter (might include reads that map to multiple locations)"
-samtools view -c ${outsam}
-
-###### sort and index
+#################### Pete's comments - sort and index ####################
 # In Bowtie2, a read that aligns to more than 1 site equally well is never given higher than a MAPQ of 1
 # (even if it aligns to only 2 sites equally well as discussed above).
 # use mapq 10 recommended for most purposes
 # if you want multialigning reads you will have lower this
-samtools view -q $q10filter -b -@ $bt2_threads $outsam | samtools sort -m 8G -@ $bt2_threads -o $outbam
-
-#Make an index of the sorted bam file
-samtools index ${outbam}
-
-# count total reads after filtering
-echo "${ID} total alignments after MAPQ filter (should only include reads that map to one location)"
-samtools view -c $outbam
-
-#Delete the temporary sam.
-rm -v ${outsam}
-rm -v $fq_1 $fq_2
