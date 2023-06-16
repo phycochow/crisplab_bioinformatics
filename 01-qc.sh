@@ -26,18 +26,24 @@ mkdir -p $fastqcfolder
 
 # Check how many fastq files there are - assumes "fastq" suffix
 fastqs="$(find ${FASTQ_DIR} -type f -name ${ID}.fastq)"
-
 # Convert to array to count elements
 fastqs_count=($fastqs)
+
+# Checks for compressed files if there arent uncompressed
+if [ -z "$fastqs" ]; then
+  fastqs="$(find "${FASTQ_DIR}" -type f -name "${ID}.fastq.gz")"
+  # Convert to array to count elements
+  fastqs_count=($fastqs)
+fi
 
 # Check if single or paired end by looking for the number of files that match the sample name
 if (( "${#fastqs_count[@]}" == 2 )); then
   # Run FastQC on paired-end reads
-  fastqc -o $fastqcfolder ${FASTQ_DIR}/${ID}_R1*.fastq ${FASTQ_DIR}/${ID}_R2*.fastq
+  fastqc -o $fastqcfolder ${FASTQ_DIR}/${ID}_R1*.fastq* ${FASTQ_DIR}/${ID}_R2*.fastq*
   echo "Paired reads"  
 else
   # Run FastQC on single-end reads
-  fastqc -o $fastqcfolder ${FASTQ_DIR}/${ID}_R1*.fastq
+  fastqc -o $fastqcfolder ${FASTQ_DIR}/${ID}_R1*.fastq*
   echo "Assuming single end"
 fi
 
