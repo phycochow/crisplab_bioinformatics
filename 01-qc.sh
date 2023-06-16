@@ -33,15 +33,13 @@ fastqs_count=($fastqs)
 
 # Check if single or paired end by looking for the number of files that match the sample name
 if (( "${#fastqs_count[@]}" == 2 )); then
-echo "Paired reads"
-
-########## Run FastQC on paired-end reads #################
-fastqc -o $fastqcfolder ${FASTQ_DIR}/${ID}_R1*.fastq ${FASTQ_DIR}/${ID}_R2*.fastq
+  # Run FastQC on paired-end reads
+  fastqc -o $fastqcfolder ${FASTQ_DIR}/${ID}_R1*.fastq ${FASTQ_DIR}/${ID}_R2*.fastq
+  echo "Paired reads"  
 else
-echo "Assuming single end"
-
-########## Run FastQC on single-end reads #################
-fastqc -o $fastqcfolder ${FASTQ_DIR}/${ID}_R1*.fastq
+  # Run FastQC on single-end reads
+  fastqc -o $fastqcfolder ${FASTQ_DIR}/${ID}_R1*.fastq
+  echo "Assuming single end"
 fi
 
 echo "Done QC. Now you should run multiqc in the output directory to summarize."
