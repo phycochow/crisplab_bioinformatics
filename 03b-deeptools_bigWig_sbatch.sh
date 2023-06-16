@@ -62,23 +62,30 @@ timestamp=$(date +%Y%m%d-%H%M%S)
 log_folder=logs/${timestamp}_${step}
 mkdir $log_folder
 
-#script path and cat a record of what was run
-script_dir=~/gitrepos/crisplab_epigenomics/WGS
-script_to_sbatch=${script_dir}/${step}.sh
-cat $script_to_sbatch > ${log_folder}/script.log
-cat $0 > ${log_folder}/sbatch_runner.log
+# Script path and cat a record of what was run
+script_dir=~/gitrepos/crisplab_wgs
+script_to_sbatch="${script_dir}/${step}.sh"
+cat "$script_to_sbatch" > "${log_folder}/script.log"
+cat "$0" > "${log_folder}/sbatch_runner.log"
 
 #submit sbatch and pass args
 #-o and -e pass the file locations for std out/error
 #--export additional variables to pass to the sbatch script including the array list and the dir structures
-sbatch --array $sbatch_t \
--t ${walltime} \
--N 1 \
--n 1 \
---cpus-per-task 2 \
---mem ${mem}gb \
--o ${log_folder}/${step}_o_%A_%a \
--e ${log_folder}/${step}_e_%A_%a \
---export LIST=${sample_list},bam_dir=${bam_dir},conda_enviro=${conda_enviro} \
---account $account_department \
-$script_to_sbatch
+sbatch_output=$(sbatch --array $sbatch_t \
+  -t ${walltime} \
+  -N 1 \
+  -n 1 \
+  --cpus-per-task 2 \
+  --mem ${mem}gb \
+  -o ${log_folder}/${step}_o_%A_%a \
+  -e ${log_folder}/${step}_e_%A_%a \
+  --export LIST=${sample_list},bam_dir=${bam_dir},conda_enviro=${conda_enviro} \
+  --account $account_department \
+  $script_to_sbatch)
+
+# Extract the job ID from sbatch output, and keep running until all sub-jobs are completed
+job_id=$(echo "$sbatch_output" | awk '{print $4}')
+while [[ $(squeue -h -j "$job_id" -t PD,R) ]]; do
+  sleep 90
+done
+echo "All jobs completed."
