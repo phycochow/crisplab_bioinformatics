@@ -16,21 +16,21 @@ echo "Starting the pipeline..."
 
 #################################### Setup ########################################
 # Check if the number of arguments is correct
-if [ $# -eq 0 ]; then
-  echo "Error: No percentages provided."
-  echo "$usage"
-  exit 1
-fi
+# if [ $# -eq 0 ]; then
+#   echo "Error: No percentages provided."
+#   echo "$usage"
+#   exit 1
+# fi
 
 # Get the directories from the command-line argument
 fastq_directory=$1
 processing_directory=$2
-percentage=$3
+# percentage=$3
 inputs_directory="$fastq_directory"/..
 
 echo "Fastq directory: $fastq_directory"
 echo "Processing directory: $processing_directory"
-echo "Percentage: $percentage"
+# echo "Percentage: $percentage"
 
 # Set file paths
 path_to_sample_list="$inputs_directory"/samples.txt
