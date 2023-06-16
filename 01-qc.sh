@@ -41,4 +41,4 @@ else
   echo "Assuming single end"
 fi
 
-echo "Done QC. Now you should run multiqc in the output directory to summarize."
+echo "Done QC. Now you should run multiqc in the output directory to summarise."
