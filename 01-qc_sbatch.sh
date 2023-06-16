@@ -54,16 +54,16 @@ cat "$0" > "${log_folder}/sbatch_runner.log"
 # -o and -e specify file locations for stdout and stderr
 # --export passes additional variables to the sbatch script, including the array list and directory structures
 sbatch_output=$(sbatch --array "$sbatch_t" \
--t "${walltime}" \
--N 1 \
--n 1 \
---cpus-per-task 1 \
---mem "${mem}gb" \
--o "${log_folder}/${step}_o_%A_%a" \
--e "${log_folder}/${step}_e_%A_%a" \
---export LIST="${sample_list}",FASTQ_DIR="${fastq_dir}" \
---account "$account_department" \
-"$script_to_sbatch")
+  -t "${walltime}" \
+  -N 1 \
+  -n 1 \
+  --cpus-per-task 1 \
+  --mem "${mem}gb" \
+  -o "${log_folder}/${step}_o_%A_%a" \
+  -e "${log_folder}/${step}_e_%A_%a" \
+  --export LIST="${sample_list}",FASTQ_DIR="${fastq_dir}" \
+  --account "$account_department" \
+  "$script_to_sbatch")
 
 # Extract the job ID from sbatch output, and keep running until all sub-jobs are completed
 job_id=$(echo "$sbatch_output" | awk '{print $4}')
