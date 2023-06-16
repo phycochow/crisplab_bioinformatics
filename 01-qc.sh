@@ -1,4 +1,3 @@
-
 #!/bin/bash
 #SBATCH --job-name fastqc
 #SBATCH --requeue
