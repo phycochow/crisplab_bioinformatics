@@ -7,7 +7,7 @@ The main script handles the iterative process and the SLURM scheduler.
  
 To install, go to terminal and:
 ```bash
-git clone https://github.com/phycochow/crisplab_wgs.git
+git clone https://github.com/phycochow/crisplab_ngs.git
 path_to_scripts=$(pwd)/crisplab_wgs
 ```
 
