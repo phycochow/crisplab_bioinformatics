@@ -1,7 +1,7 @@
 # Crisp's Lab NGS Transgene Detection Project
 These scripts run the bioinformatic pipeline to map pair-end reads to a reference genome and known transgene vectors. It also extracts features from the iteractive process, which are used to develop of a robust supervised learning model for the classification of transgenic sorghum using Next-Generation Sequencing (NGS) Illumina data. 
 
-This undergraduate project was conducted in collaboration with esteemed researchers at the University of Queensland, including Dr. Peter Crisp, Dr. Karen Massel, and the world-renowned Sorghum expert, Professor Ian Godwin.
+This undergraduate project was supervised by Dr. Peter Crisp, Dr. Karen Massel, and the world-renowned Sorghum expert, Professor Ian Godwin at the School of Argicultural and Food Sciences, University of Queensland.
 
 The main script handles the iterative process and the SLURM scheduler.
  
